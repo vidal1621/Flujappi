@@ -1,0 +1,637 @@
+{% extends 'layout/templateBasico.html' %}
+{% block content %}
+<!-- Cuerpo -->
+<div class="nk-content ">
+    <div class="container-fluid">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                    <div class="nk-block-between">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">REGISTRO DE VENTA - {{contribuyentes[0][1]}}</h3>
+                            <div class="nk-block-des text-soft">
+                            </div>
+                        </div><!-- .nk-block-head-content -->
+                        <div class="nk-block-head-content">
+                            <div class="toggle-wrap nk-block-tools-toggle">
+                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
+                                <div class="toggle-expand-content" data-content="pageMenu" data-toggle="tooltip" data-placement="top" title="Desde SII">
+                                    <ul class="nk-block-tools g-3">
+                                        <li>
+                                           {# <form method="post">#}
+                                                <div class="row">
+                                                    <div>
+                                                        <div class="form-group">
+                                                            <label class="form-label">Seleccionar Fecha</label>
+                                                            <div class="form-control-wrap">
+                                                                <div class='input-group date' id='datetimepicker10'>
+                                                                    <input type='text'
+                                                                           class="form-control fechaVista"
+                                                                           id="fechaVista" required
+                                                                           data-date-format="mm-yyyy"/>
+                                                                    <div class="input-group-append">
+                                                                        <span class="input-group-text">
+                                                                          <span class="icon ni ni-calendar"></span>
+                                                                        </span>
+                                                                    </div>
+                                                                    <input type="hidden" id="mes" name="mes">
+                                                                    <input type="hidden" id="anio" name="anio"
+                                                                           value="{{ anio_actual }}">
+                                                                    <button onclick="solicitudActualizarCompraVenta('ventas')" type="submit"
+                                                                            class="btn btn-outline-success"
+                                                                            id="actualizar"><em
+                                                                            class="icon ni ni-update"></em><span>Actualizar</span>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {#</form>#}
+                                        </li>
+                                        <!--<li class="nk-block-tools-opt">
+                                            <div class="drodown">
+                                                <a href="#" class="dropdown-toggle btn btn-icon btn-primary" data-toggle="dropdown"><em class="icon ni ni-plus"></em></a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <ul class="link-list-opt no-bdr">
+                                                       &lt;!&ndash; <li><a href="templates/ingresos/notaVenta.html"><span>Agregar Nota</span></a></li>&ndash;&gt;
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </li>-->
+                                    </ul>
+                                </div>
+                            </div><!-- .toggle-wrap -->
+                        </div><!-- .nk-block-head-content -->
+                    </div><!-- .nk-block-between -->
+                </div><!-- .nk-block-head -->
+                <div class="nk-block">
+                    <div class="nk-block nk-block-lg">
+                        <div class="row g-gs">
+                            <div class="col-xl-4 col-lg-4 col-12">
+                                <div class="card card-bordered card-full">
+                                    <div class="card-inner">
+                                        <div class="card-title-group align-start mb-0">
+                                            <div class="card-title">
+                                                <h6 class="subtitle">Total Ventas Anual + IVA</h6>
+                                            </div>
+                                            <div class="card-tools">
+                                                <em class="card-hint icon ni ni-money" style="color:#1ee0ac" data-toggle="tooltip" data-placement="left" title="" data-original-title="Total Ventas"></em>
+                                            </div>
+                                        </div>
+                                        <div class="card-amount">
+                                            <span class="amount" id="montoConciliado" style="color: #1ee0ac !important">{% if (totalVentas) %} {{"{:,.0f}".format(totalVentas[0]).replace(',','.')}} {%else%} 0 {% endif %}<small class="currenct currency-usd change up text-danger">CLP</small></span>
+                                        </div>
+                                        <div class="invest-data-history">
+                                            <div class="title">Total Ticket Promedio</div>
+                                            <div class="amount">{% if (cantidadTotalAnual) %}
+                                                    {{"{:,.0f}".format(totalVentas[0]/cantidadTotalAnual[0]).replace(',','.')}}
+                                                {%else%} 0
+                                            {% endif %}</div>
+                                        </div>
+                                    </div>
+                                </div><!-- .card -->
+                            </div><!-- .col -->
+                            <div class="col-xl-4 col-lg-4 col-12">
+                                <div class="card card-bordered card-full">
+                                    <div class="card-inner">
+                                        <div class="card-title-group align-start mb-0">
+                                            <div class="card-title">
+                                                <h6 class="subtitle">Días Cobro Estimado </h6>
+                                            </div>
+                                            <div class="card-tools">
+                                                <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip" data-placement="left" title="" data-original-title="Total Gap Ventas"></em>
+                                            </div>
+                                        </div>
+                                        <div class="card-amount">
+                                            <span class="amount text-danger" id="diasCOBRO"></span>
+                                        </div>
+                                        <div class="invest-data">
+                                            <div class="invest-data-amount g-2">
+                                                <div class="invest-data-history">
+                                                    <div class="title">GAP Ventas</div>
+                                                    <div class="amount" id="gapVentas"></div>
+                                                </div>
+                                                <div class="invest-data-history">
+                                                    <div class="title">Días Cobro Real</div>
+                                                    <div class="amount" id="diasCOBROREAL"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .col -->
+                            <div class="col-xl-4 col-lg-4 col-12">
+                                <div class="card card-bordered card-full">
+                                    <div class="card-inner">
+                                        <div class="card-title-group align-start mb-0">
+                                            <div class="card-title">
+                                                <h6 class="subtitle">Clientes Únicos Año </h6>
+                                            </div>
+                                            <div class="card-tools">
+                                                <em class="card-hint icon ni ni-money" style="color:#1ee0ac" data-toggle="tooltip" data-placement="left" title="" data-original-title="Total Facturas Anual"></em>
+                                            </div>
+                                        </div>
+                                        <div class="card-amount">
+                                            <span class="amount">{% if (clientesUnicosVentasAnuales)%}{{clientesUnicosVentasAnuales[0]}}{%else%} 0 {%endif%} Clientes</span>
+                                        </div>
+                                        <div class="invest-data">
+                                            <div class="invest-data-amount g-2">
+                                                <div class="invest-data-history">
+                                                    <div class="title">Clientes Únicos Mensual</div>
+                                                    <div class="amount">{% if (clientesUnicosVentasMensuales)%}{{clientesUnicosVentasMensuales[0]}}{%else%} 0 {%endif%}<small class="currenct currency-usd"></small></div>
+                                                </div>
+                                                <div class="invest-data-history">
+                                                    <div class="title">Total Facturas Año</div>
+                                                    <div class="amount">{% if (cantidadTotalAnual) %} {{"{:,.0f}".format(cantidadTotalAnual[0])}} {%else%} 0 {% endif %}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!-- .card -->
+                            </div><!-- .col -->
+                        </div>
+                        <br>
+                        <div class="row g-gs">
+                            <div class="col-md-12">
+                                <div class="card card-preview">
+                                    <div class="card-inner">
+                                        <div class="card-head">
+                                            <h6 class="title">Gráfico ventas por día acumulado del año</h6>
+                                        </div>
+                                        <div class="nk-ck-sm">
+                                            <canvas class="line-chart" id="graficoVentasxDias"></canvas>
+                                        </div>
+                                    </div>
+                                </div><!-- .card-preview -->
+                            </div>
+                        </div>
+                        <div class="row g-gs">
+                            <div class="col-md-6">
+                                <div class="card card-preview">
+                                    <div class="card-inner">
+                                        <div class="card-head">
+                                            <h6 class="title">Montos de Facturas {{anio_actual}}</h6>
+                                        </div>
+                                        <div class="nk-ck-sm">
+                                            <canvas class="line-chart" id="filledLineChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div><!-- .card-preview -->
+                            </div>
+                             <div class="col-md-6">
+                                <div class="card card-preview">
+                                    <div class="card-inner">
+                                        <div class="card-head">
+                                            <h6 class="title">Cantidad de Facturas {{anio_actual}}</h6>
+                                        </div>
+                                        <div class="nk-ck-sm">
+                                            <canvas class="bar-chart" id="barChartData"></canvas>
+                                        </div>
+                                    </div>
+                                </div><!-- .card-preview -->
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="card card-bordered card-stretch">
+                        <div class="card-inner-group">
+                            <div class="card card-preview">
+                                <div class="card-inner">
+                                    <table class="datatable-init-export nowrap table" id="tablaVentas">
+                                        <thead>
+                                            <tr>
+                                                <th>Folio</th>
+                                                <th>Cliente</th>
+                                                <th>Fecha de Emisión</th>
+                                                <th>Fecha de Vencimiento</th>
+                                                <th>Fecha Pago</th>
+                                                <th>Días Real Pago</th>
+                                                <th>Monto</th>
+                                                <th style="text-align: center">Estado Conciliación</th>
+                                                <th style="text-align: center">Enviar correo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for v in vtas %}
+                                                {% set fechaEm = (v[3] | string).split('-') %}
+                                                {% set fechaEmision = fechaEm[2]~'-'~fechaEm[1]~'-'~fechaEm[0] %}
+
+                                                {% set fechaV = (v[4] | string).split('-') %}
+                                                {% set fechaVencimiento = fechaV[2]~'-'~fechaV[1]~'-'~fechaV[0] %}
+                                                <tr>
+                                                    <input type="hidden" class="subTotalDiasFacturas" value="{{ v[8]|int * v[5]|int }}">
+                                                    <td>{{v[0]}}</td>
+                                                    <td>{{v[1]}} {{ v[7] }}</td>
+                                                    <td>{{fechaEmision}}</td>
+                                                    <td>{{fechaVencimiento}}<br> <span class="badge badge-secondary"><em class="icon ni ni-info-i"></em> Vence {{ v[8] }} días</span></td>
+                                                    {% if(v[9]=='no conciliada') %}
+                                                        <td></td>
+                                                        <td></td>
+                                                    {% else %}
+                                                        {% for fo in conciliacionesVenta %}
+                                                            {% if(v[0]==fo[0]) %}
+                                                                {% set fechaMovEm = (fo[13] | string).split('-') %}
+                                                                {% set fechaMovEditada = fechaMovEm[2]~'-'~fechaMovEm[1]~'-'~fechaMovEm[0] %}
+                                                                <td style="text-align: right">{{ fechaMovEditada}}</td>
+                                                                <td style="text-align: right"><div id="diasReal_{{loop.index }}"></div></td>
+                                                                <input type="hidden" class="subTotalDiasFacturasReal" id="subTotalDiasFacturasReal_{{ loop.index }}">
+                                                                <script>
+                                                                    var day1 = new Date('{{ v[3] }}');
+                                                                    var day2 = new Date('{{ fo[13] }}');
+                                                                    var difference= Math.abs(day2-day1);
+                                                                    days = difference/(1000 * 3600 * 24)
+                                                                    $('#diasReal_{{loop.index }}').html(days);
+
+                                                                    var montoTo = '{{ v[5]|int }}';
+                                                                    var multiplicacion = parseInt(days) * parseInt(montoTo);
+                                                                    $('#subTotalDiasFacturasReal_{{loop.index }}').val(multiplicacion);
+                                                                </script>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                    <td style="text-align: right">{{"{:,.0f}".format(v[5]).replace(',','.')}} <input type="hidden" class="totalMontosVentas" value="{{ v[5]|int }}"></td>
+                                                    <td style="text-align: center">{% if(v[9]=='no conciliada') %}
+                                                        <button class="btn btn-sm btn-primary" onclick="conciliar('{{v[0]}}','{{v[1]}}','{{ v[7] }}','{{ fechaEmision }}','{{ fechaVencimiento }}','{{"{:,.0f}".format(v[5]).replace(',','')}}')">
+                                                            <em class="icon ni ni-tranx"></em> Conciliar</button>
+                                                        {% else %}
+                                                            {% for fo in conciliacionesVenta %}
+                                                                {% if(v[0]==fo[0]) %}
+                                                                    {% set fechaMovEm = (fo[13] | string).split('-') %}
+                                                                    {% set fechaMovEditada = fechaMovEm[2]~'-'~fechaMovEm[1]~'-'~fechaMovEm[0] %}
+                                                                    <a href="javascript:conciliar('{{v[0]}}','{{v[1]}}','{{ v[7] }}','{{ fechaEmision }}','{{ fechaEstimada }}','{{"{:,.0f}".format(v[5]).replace(',','')}}','conciliada','{{ fo[12] }}','{{ fechaMovEditada}}','{{"{:,.0f}".format(fo[14]).replace(',','.')}}')"><span class="badge badge-dot badge-success">Conciliada</span></a>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                    {% endif %}</td>
+
+                                                    <td style="text-align: center">{% if(v[6]==None) %}
+                                                        <a href="/clienteProveedor/clientes/{{contribuyentes[0][0]}}"><span class="badge badge-dot badge-dot-xs badge-warning">Crear Email</span></a>
+                                                    {% else %}
+                                                            <em class="icon ni ni-mail-fill" onclick="enviarEmail('{{v[0]}}','{{v[1]}}','{{ v[7] }}','{{ fechaEmision }}','{{"{:,.0f}".format(v[5]).replace(',','.')}}','{{ v[6] }}','{{contribuyentes[0][1]}}')" style="color:#1ee0ac"></em>{% endif %}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- .card-inner-group -->
+                    </div><!-- .card -->
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" id="modalConciliar">
+    <div class="modal-dialog modal-dialog-top modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Conciliar Venta</h4>
+                <button onclick="limpiarDatos()" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card card-bordered card-full">
+                            <div class="card-inner">
+                                <div class="card-title-group align-start mb-0">
+                                    <div class="card-title">
+                                        <h6 class="subtitle" id="rut" style="color:#1ee0ac !important"></h6>
+                                    </div>
+                                </div>
+                                <div class="card-amount">
+                                    <span class="amount" id="monto"></span>
+                                </div>
+                                <div class="invest-data">
+                                    <div class="invest-data-amount g-2">
+                                        <div class="invest-data-history">
+                                            <div class="title">Fecha de Emisión</div>
+                                            <div class="amount" id="fechaEmision"></div>
+                                        </div>
+                                        <div class="invest-data-history">
+                                            <div class="title">Fecha de Vencimiento</div>
+                                            <div class="amount" id="fechaVcto"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- .card -->
+                    </div>
+                     <div class="col-md-6">
+                        <div class="card card-bordered card-full">
+                            <div class="card-inner">
+                                <div class="card-title-group align-start mb-0">
+                                    <div class="card-title">
+                                        <h6 class="subtitle" id="descripcionMovimiento" style="color:#f4bd0e"></h6>
+                                    </div>
+                                    <div class="card-tools">
+                                        <em class="card-hint icon ni ni-trash-fill" onclick="limpiarDatos()" style="color:#e85347" data-toggle="tooltip" data-placement="left" title="" data-original-title="Eliminar Movimiento"></em>
+                                    </div>
+                                </div>
+                                <div class="card-amount">
+                                    <span class="amount" id="montoMovimiento"></span>
+                                </div>
+                                <div class="invest-data">
+                                    <div class="invest-data-amount g-2">
+                                        <div class="invest-data-history">
+                                            <div class="title">Fecha Movimiento</div>
+                                            <div class="amount" id="fechaMovimiento"></div>
+                                        </div>
+                                        <div class="invest-data-history">
+                                            <div class="title">Monto por Asignar</div>
+                                            <div class="amount" id="montoRestante"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- .card -->
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6"></div>
+                    <div class="col-md-6" style="text-align: right">
+                        <div class="form-group">
+                            <button type="button" id="btnConciliar" class="btn btn-sm btn-primary" style="display: none" onclick="agregarConciliacion('ventas')"><em class="icon ni ni-tranx"></em> Conciliar</button>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-bordered card-full">
+                            <div class="card-inner">
+                                <h4 class="title" style="text-align: center">Movimientos Bancarios</h4>
+                                <hr>
+                            
+                               {# {% for mob in mobs %}
+                                    {% for foo in range(mob|length) %}
+                                        {{ mob[foo][0] }}
+                                    {% endfor %}
+
+                                {% endfor %}#}
+                                {#datatable-init-export nowrap table#}
+                                <table class="table" id="ejemplito">
+                                    <thead>
+                                        <tr>
+                                            <th>Descripción</th>
+                                            <th>Fecha</th>
+                                            <th>Monto</th>
+                                            <th>Monto por Asignar</th>
+                                            <th>Estado</th>
+                                            <th style="text-align: center"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bodyTabla">
+                                        {% for foo in mobs %}
+                                            {% for mob in range(foo|length) %}
+                                                {% set fechaM = (foo[mob][6] | string).split('-') %}
+                                                {% set fechaMovimiento = fechaM[2]~'-'~fechaM[1]~'-'~fechaM[0] %}
+                                                {% set monto = foo[mob][4]+foo[mob][5] %}
+                                                <tr id="fila_{{ loop.index0 }}">
+                                                    {#<td>{{ foo[0] }}</td>#}
+                                                    <td><input type="hidden" id="totalMovimientoBancarioSugerido" class="totalMovimientoBancarioSugerido" value="{{ monto|int }}">
+                                                        {{ foo[mob][1] }}</td>
+                                                    <td>{{ fechaMovimiento }}</td>
+                                                    <td style="text-align: right">
+                                                        <span id="sugerenciaMostrar_{{ loop.index0 }}" class="sugerenciaMostrar{{ monto|int }}"></span>
+                                                        {{ "{:,.0f}".format(monto).replace(',','.') }}</td>
+                                                    <td></td>
+                                                    <td>{% if(foo[mob][8]=='no conciliada') %}<span class="badge badge-dot badge-warning">No Conciliado</span>{% else %}<span class="badge badge-dot badge-success">Conciliado</span>{% endif %}</td>
+                                                    <td style="text-align: center">
+                                                        {% if(foo[mob][8]=='no conciliada') %}
+                                                        <button class="btn btn-sm btn-dim btn-info" onclick="movimientoBancario('{{ foo[mob][0] }}','{{ foo[mob][1] }}','{{ fechaMovimiento }}','{{ "{:,.0f}".format(monto).replace(',','') }}')"><em class="icon ni ni-chevron-up-circle"></em> Seleccionar</button>
+                                                    {% endif %}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="modalConciliada">
+    <div class="modal-dialog modal-dialog-top modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Venta Conciliada </h4>
+                <button onclick="limpiarDatos()" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card card-bordered card-full">
+                            <div class="card-inner">
+                                <div class="card-title-group align-start mb-0">
+                                    <div class="card-title">
+                                        <h6 class="subtitle" id="rutConciliada" style="color:#1ee0ac !important"></h6>
+                                    </div>
+                                </div>
+                                <div class="card-amount">
+                                    <span class="amount" id="montoConciliada"></span>
+                                </div>
+                                <div class="invest-data">
+                                    <div class="invest-data-amount g-2">
+                                        <div class="invest-data-history">
+                                            <div class="title">Fecha de Emisión</div>
+                                            <div class="amount" id="fechaEmisionConciliada"></div>
+                                        </div>
+                                        <div class="invest-data-history">
+                                            <div class="title">Fecha de Vencimiento</div>
+                                            <div class="amount" id="fechaVctoConciliada"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- .card -->
+                    </div>
+                     <div class="col-md-6">
+                        <div class="card card-bordered card-full">
+                            <div class="card-inner">
+                                <div class="card-title-group align-start mb-0">
+                                    <div class="card-title">
+                                        <h6 class="subtitle" id="descripcionMovimientoConciliada" style="color:#f4bd0e"></h6>
+                                    </div>
+                                </div>
+                                <div class="card-amount">
+                                    <span class="amount" id="montoMovimientoConciliada"></span>
+                                </div>
+                                <div class="invest-data">
+                                    <div class="invest-data-amount g-2">
+                                        <div class="invest-data-history">
+                                            <div class="title">Fecha Movimiento</div>
+                                            <div class="amount" id="fechaMovimientoConciliada"></div>
+                                        </div>
+                                        <div class="invest-data-history">
+                                            <div class="title">Monto por Asignar</div>
+                                            <div class="amount" id="montoRestanteConciliada"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- .card -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- content @e -->
+<input type="hidden" id="descripcionConciliacion">
+<input type="hidden" id="codigoMovimiento">
+<input type="hidden" id="folio">
+<input type="hidden" id="totalCompraVenta">
+<input type="hidden" id="totalMovimientoBancario">
+<input type="hidden" id="contadorFila">
+<input type="hidden" id="rutContribuyente" value="{{contribuyentes[0][0]}}">
+<input type="hidden" id="inputTotalMontosVentas">
+{#URL DEL SITIO EN EL QUE ESTOY#}
+<input type="hidden" name="urlCambiarEmpresa" id="urlCambiarEmpresa" value="compra/registroCompras">
+<!-- content @e -->
+<script>
+    "use strict";
+    var mes=[];
+    var monto=[];
+    var montoCompras=[];
+    var montoVentas=[];
+    {% for g in graficoCantidades %}
+        monto.push({{g["cantidad"]}});
+        mes.push(numeroNombreMes({{g['mes']}}));
+    {% endfor %}
+
+    var mes=[];
+    var cantidad=[];
+    {% for g in graficoCount %}
+        cantidad.push({{g["cantidad"]}});
+        mes.push(numeroNombreMes({{g['mes']}}));
+    {% endfor %}
+
+    var filledLineChart = {
+        labels: mes,
+        dataUnit: 'pesos',
+        lineTension: .4,
+        datasets: [{
+            label: "Total Received",
+            color: "#798bff",
+            background: NioApp.hexRGB('#798bff', .4),
+            data: monto
+        }]
+      };
+
+    var barChartData = {
+        labels: mes,
+        dataUnit: '',
+        datasets: [{
+            label: "Cantidad",
+            color: "#9cabff",
+            data: cantidad
+        }]
+    };
+
+    var montoxDias=[];
+    var dias=[];
+    {% for g in graficoVentasDias %}
+        dias.push('{{ g[1] }}')
+        montoxDias.push({{g[2]}});
+    {% endfor %}
+
+   var graficoVentasxDias = {
+        labels: dias,
+        dataUnit: 'pesos',
+        lineTension: .4,
+        datasets: [{
+            label: "Total Received",
+            color: "#798bff",
+            background: NioApp.hexRGB('#798bff', .4),
+            data: montoxDias
+        }]
+    };
+
+    function enviarEmail(folio,rut,cliente,fechaEmision,monto,email,empresa){
+        $.ajax({
+            type: "post",
+            url: '/correo/correos/'+rut+'/' + monto + '/' + cliente + '/' + fechaEmision + '/' + folio + '/'+email+'/' +empresa ,
+            success: function (respuesta) {
+                console.log(respuesta)
+                setTimeout('document.location.reload()', 3000);
+            },
+            error: function () {
+                alert('Disculpe, existió un problema');
+            }
+        })
+    }
+
+    /*function seleccionarOtraEmpresa(){
+        window.location.href = '/empresa/regis/'+$("#empresaSeleccionada").val();
+    }*/
+
+    var totalDiasFacturas = 0;
+    $(".subTotalDiasFacturas").each(function (i) {
+        totalDiasFacturas += parseInt($(".subTotalDiasFacturas")[i].value || 0)
+    });
+
+    var totalDiasFacturasReal = 0;
+    $(".subTotalDiasFacturasReal").each(function (i) {
+        totalDiasFacturasReal += parseInt($(".subTotalDiasFacturasReal")[i].value || 0)
+    });
+    console.log(totalDiasFacturasReal);
+
+    {% if (totalVentas) %}
+        var totalVentas = '{{ totalVentas[0]|int }}';
+    {%else%}
+        var totalVentas = 0;
+    {% endif %}
+
+    if(totalVentas<totalDiasFacturas){
+        var diasCobro = parseInt(totalDiasFacturas) / parseInt(totalVentas);
+    }else{
+        var diasCobro = parseInt(totalVentas) / parseInt(totalDiasFacturas);
+    }
+    $("#diasCOBRO").html(Math.round(diasCobro)+' Días')
+
+    if(totalVentas<totalDiasFacturasReal){
+        var diasCobroReal = parseInt(totalDiasFacturasReal) / parseInt(totalVentas);
+    }else{
+        var diasCobroReal = parseInt(totalVentas) / parseInt(totalDiasFacturasReal);
+    }
+    var gap = diasCobro - diasCobroReal;
+    if(gap < 0){
+        gap = gap * -1
+    }
+    $("#diasCOBROREAL").html(Math.round(diasCobroReal)+' <small class="text-info"><i class="icon ni ni-info"></i> solo conciliadas</small>')
+    $("#gapVentas").html(Math.round(gap)+' <small> Días</small>')
+</script>
+<script src="/static/assets/js/conciliarCompraVenta.js"></script>
+<script src="/static/assets/js/graficos.js"></script>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <script>
+            var mensaje = '{{ messages[0] }}';
+            switch (mensaje) {
+                case 'actualizado':
+                    Swal.fire("Correcto", "Se actualizaron las facturas correctamente", "success");
+                    break;
+                case 'ok':
+                    Swal.fire("Correcto", "Se realizó la conciliación correctamente", "success");
+                    break;
+                case 'correcto':
+                    Swal.fire("Correcto", "Se envio el email correctamente", "success");
+                    break;
+            }
+        </script>
+    {% endif %}
+{% endwith %}
+{% endblock %}

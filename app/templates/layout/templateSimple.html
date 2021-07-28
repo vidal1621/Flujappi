@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zxx" class="js">
+
+<head>
+    <base href="../">
+    <meta charset="utf-8">
+    <meta name="author" content="Natalia">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Ejecucion de programa">
+    <!-- Fav Icon  -->
+    <link rel="shortcut icon" href="/static/assets/images/logo/flujappi.ico">
+    <!-- Page Title  -->
+    <title>{{titulo}}</title>
+    <!-- StyleSheets  -->
+    <link rel="stylesheet" href="/static/assets/css/dashlite.css?ver=2.4.0">
+    <link id="skin-default" rel="stylesheet" href="/static/assets/css/theme.css?ver=2.4.0">
+</head>
+
+<body class="nk-body bg-lighter npc-general has-sidebar no-touch nk-nio-theme dark-mode"> <!--nk-body bg-lighter npc-general has-sidebar -->
+    <div class="nk-app-root">
+        <!-- main @s -->
+        <div class="nk-main ">
+            <!-- wrap @s -->
+             <!-- MENU -->
+            {% if(datosUsx[4]=='administrador') %}
+                <div class="nk-sidebar nk-sidebar-fixed is-dark is-compact" data-content="sidebarMenu">
+                    <div class="nk-sidebar-element nk-sidebar-head">
+                        <div class="nk-menu-trigger">
+                            <a href="#" class="nk-nav-toggle nk-quick-nav-icon d-xl-none" data-target="sidebarMenu"><em class="icon ni ni-arrow-left"></em></a>
+                            <a href="#" class="nk-nav-compact nk-quick-nav-icon d-none d-xl-inline-flex" data-target="sidebarMenu"><em class="icon ni ni-menu"></em></a>
+                        </div>
+                        <div class="nk-sidebar-brand" style="margin-left: 50px;">
+                            <a href="/" class="logo-link nk-sidebar-logo">
+                                <img class="logo-light logo-img" src="/static/assets/images/logo/flujappi-2.png" srcset="/static/assets/images/logo/flujappi-2.png 2x" alt="logo">
+                                <img class="logo-dark logo-img" src="/static/assets/images/logo/flujappi-2.png" srcset="/static/assets/images/logo/flujappi-2.png 2x" alt="logo-dark">
+                            </a>
+                        </div>
+                    </div><!-- .nk-sidebar-element -->
+                    <div class="nk-sidebar-element nk-sidebar-body">
+                        <div class="nk-sidebar-content">
+                            <div class="nk-sidebar-menu" data-simplebar>
+                                <ul class="nk-menu">
+                                    <li class="nk-menu-heading">
+                                        <h6 class="overline-title text-primary-alt">Empresa</h6>
+                                    </li><!-- .nk-menu-heading -->
+                                    <li class="nk-menu-item">
+                                        <a href="/empresa/seleccionarEmpresa" class="nk-menu-link">
+                                            <span class="nk-menu-icon"><em class="icon ni ni-home"></em></span>
+                                            <span class="nk-menu-text">Saldos y Empresas</span>
+                                        </a>
+                                    </li>
+                                    <li class="nk-menu-heading">
+                                        <h6 class="overline-title text-primary-alt">Ajustes</h6>
+                                    </li><!-- .nk-menu-heading -->
+                                    <li class="nk-menu-item has-sub">
+                                        <a href="#" class="nk-menu-link nk-menu-toggle">
+                                            <span class="nk-menu-icon"><em class="icon ni ni-setting-alt"></em></span>
+                                            <span class="nk-menu-text">Maestro</span>
+                                        </a>
+                                        <ul class="nk-menu-sub">
+                                            <li class="nk-menu-item">
+                                                <a href="/maestroSuscribirse" class="nk-menu-link {% if opcionMenu=='listadousuario'%}active{%endif%}"><span class="nk-menu-text">Suscripciones</span></a>
+                                            </li>
+                                        </ul><!-- .nk-menu-sub -->
+                                    </li>
+                                </ul><!-- .nk-menu -->
+                            </div><!-- .nk-sidebar-menu -->
+                        </div><!-- .nk-sidebar-content -->
+                    </div><!-- .nk-sidebar-element -->
+                </div>
+            {% endif %}
+            <!-- Menu -->
+            <div class="nk-wrap ">
+
+                <script src="/static/assets/js/bundle.js?ver=2.4.0"></script>
+                <script src="/static/assets/js/scripts.js?ver=2.4.0"></script>
+                <!-- Menu encabezado -->
+                <div class="nk-header nk-header-fixed is-light">
+                    <div class="container-fluid">
+                        <div class="nk-header-wrap">
+                            <div class="nk-menu-trigger d-xl-none ml-n1">
+                                <a href="#" class="nk-nav-toggle nk-quick-nav-icon" data-target="sidebarMenu"><em class="icon ni ni-menu"></em></a>
+                            </div>
+                            <div class="nk-header-brand d-xl-none">
+                                <a href="#" class="logo-link">
+                                    <img class="logo-light logo-img" src="/static/images/logo.png" srcset="/static/images/logo2x.png 2x" alt="logo">
+                                    <img class="logo-dark logo-img" src="/static/images/logo-dark.png" srcset="/static/images/logo-dark2x.png 2x" alt="logo-dark">
+                                </a>
+                            </div><!-- .nk-header-brand -->
+                            <div class="nk-header-news d-none d-xl-block">
+                                <div class="nk-news-list">
+                                </div>
+                            </div>
+                            <div class="nk-header-tools">
+                                <ul class="nk-quick-nav">
+                                    <li class="dropdown user-dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <div class="user-toggle">
+                                                <div class="user-avatar sm">
+                                                    <em class="icon ni ni-user-alt"></em>
+                                                </div>
+                                                <div class="user-info d-none d-md-block">
+                                                    <div class="user-status">Usuario</div>
+                                                    <div class="user-name dropdown-indicator">{{ datosUsx[4] }}</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-md dropdown-menu-right dropdown-menu-s1">
+                                            <div class="dropdown-inner user-card-wrap bg-lighter d-none d-md-block">
+                                                <div class="user-card">
+                                                    <div class="user-avatar">
+                                                        <span>{{ datosUsx[1][0] }}</span>
+                                                    </div>
+                                                    <div class="user-info">
+                                                        <span class="lead-text">{{ datosUsx[1] }}</span>
+                                                        <span class="sub-text">{{ datosUsx[5] }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="dropdown-inner">
+                                                <ul class="link-list">
+                                                    {#<li><a href="xipax/templates/usuario/usuarioPerfil.html"><em class="icon ni ni-setting-alt"></em><span>Ajustes de la Cuenta</span></a></li>#}
+                                                    <li><a class="dark-switch" href="#"><em class="icon ni ni-moon"></em><span>Modo Oscuro</span></a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="dropdown-inner">
+                                                <ul class="link-list">
+                                                    <li><a href="/logout"><em class="icon ni ni-signout"></em><span>Salir</span></a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li><!-- .dropdown -->
+                                </ul><!-- Datos del Usuario -->
+                            </div><!-- .nk-header-tools -->
+                        </div><!-- .nk-header-wrap -->
+                    </div><!-- .container-fliud -->
+                </div>
+                <!-- Menu encabezado -->
+                <!-- Cuerpo -->
+                {% block content %}{% endblock %}
+                <!-- Cuerpo -->
+                <!-- Pie de Pagina -->
+                {% include "layout/footer.html" %}
+                <!-- Pie de Pagina -->
+            </div>
+            <!-- wrap @e -->
+        </div>
+        <!-- main @e -->
+    </div>
+    <!-- app-root @e -->
+    <!-- JavaScript -->
+</body>
+</html>

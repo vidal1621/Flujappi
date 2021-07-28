@@ -1,0 +1,176 @@
+{% extends 'layout/templateBasico.html' %}
+{% block content %}
+<!-- Cuerpo -->
+<div class="nk-content ">
+    <div class="container-fluid">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                    <div class="nk-block-between">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">LISTADO DE PROVEEDORES - {{ contribuyentes[0][1] }}</h3>
+                            <div class="nk-block-des text-soft">
+                                <p></p>
+                            </div>
+                        </div><!-- .nk-block-head-content -->
+                        <div class="nk-block-head-content">
+                            <div class="toggle-wrap nk-block-tools-toggle">
+                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
+                                <div class="toggle-expand-content">
+                                    <ul class="nk-block-tools g-3">
+                                    </ul>
+                                </div>
+                            </div><!-- .toggle-wrap -->
+                        </div><!-- .nk-block-head-content -->
+                    </div><!-- .nk-block-between -->
+                </div><!-- .nk-block-head -->
+                <div class="nk-block">
+                    <div class="card card-bordered card-stretch">
+                        <div class="card-inner-group">
+                            <div class="card card-preview">
+                                <div class="card-inner">
+                                    <table class="datatable-init nowrap table">
+                                        <thead>
+                                            <tr>
+                                                <th>Rut</th>
+                                                <th>Proveedor</th>
+                                                <th>Email</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for b in proveedores %}
+                                            <tr>
+                                                <td>{{ b[0] }}</td>
+                                                <td>{{ b[1] }}</td>
+                                                <td>{% if(b[2]==None) %}<span class="badge badge-dot badge-dot-xs badge-danger">Sin Email</span> {% else %}<span class="badge badge-dot badge-dot-xs badge-success">{{ b[2] }}</span>{% endif %}</td>
+                                                <td>{{ b[3] }}</td>
+                                                <td style="text-align: center"><button type="button" class="btn btn-sm btn-success" onclick="javascript:actualizarFila('{{b[0]}}','{{b[2]}}','{{ b[3] }}',{{ b[4] }});"><em class="icon ni ni-edit-fill"></em> Actualizar</button></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- .card-inner-group -->
+                    </div><!-- .card -->
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" name="urlCambiarEmpresa" id="urlCambiarEmpresa" value="clienteProveedor/proveedores">
+<!-- content @e -->
+
+<div class="modal fade" tabindex="-1" id="modalActualizar">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <label class="form-label">Actualizar Datos Proveedor</label>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Email Empresa</label>
+                    <div class="form-control-wrap">
+                        <input type="email" class="form-control" id="correo_contribuyente" name="correo_contribuyente" required />
+                        <input type="hidden" class="form-control" id="rut_cliente_proveedor" name="rut_cliente_proveedor" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Días Pago</label>
+                    <div class="form-control-wrap">
+                        <input type="number" class="form-control" id="desc_conf_contribuyente" name="desc_conf_contribuyente" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cuenta Asociada</label>
+                    <div class="form-control-wrap">
+                        <select class="form-control" name="cod_cuenta" id="cod_cuenta">
+                            <option value="">Seleccionar cuenta...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="form-group">
+                    <button type="button" id="btn_actualizar" class="btn btn-success" onclick="actualizarDato()">Actualizar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function actualizarFila(rut_cliente_proveedor,email,dias,cod_cuenta){
+        $('#modalActualizar').modal('show');
+        $("#rut_cliente_proveedor").val(rut_cliente_proveedor)
+        if (email=='None'){
+            $("#correo_contribuyente").val('')
+        }else{
+            $("#correo_contribuyente").val(email)
+        }
+        $("#desc_conf_contribuyente").val(dias);
+
+        var html='';
+        {% for c in cuentas %}
+            var cuenta = '{{ c[0] }}';
+            if(cuenta==cod_cuenta){
+                html += `<option selected value="{{ c[0] }}">{{ c[1] }}</option>`;
+            }else{
+                html += `<option value="{{ c[0] }}">{{ c[1] }}</option>`;
+            }
+        {% endfor %}
+        $("#cod_cuenta").html(html);
+    }
+
+     function actualizarDato(){
+        if($("#correo_contribuyente").val()==''){
+            Swal.fire("Alerta", "Debe ingresar un email", "warning");
+        }else if($("#desc_conf_contribuyente").val()==''){
+            Swal.fire("Alerta", "Debe ingresar dias de pago", "warning");
+        }else if($("#cod_cuenta").val()==''){
+            Swal.fire("Alerta", "Debe ingresar una cuenta", "warning");
+        }else {
+            var data = {
+                "rut_cliente_proveedor": $("#rut_cliente_proveedor").val(),
+                "correo_contribuyente": $("#correo_contribuyente").val(),
+                "desc_conf_contribuyente":$("#desc_conf_contribuyente").val(),
+                "cod_cuenta":$("#cod_cuenta").val(),
+                "rut_contribuyente":'{{contribuyentes[0][0]}}'
+            }
+            console.log(data)
+            $.ajax({
+                type: "update",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                url: '/clienteProveedor/proveedores/'+'{{contribuyentes[0][0]}}',
+                success: function (respuesta) {
+                    Swal.fire("Correcto", "Se actualizo el proveedor correctamente", "success");
+                    $("#btn_actualizar").hide();
+                    setTimeout('document.location.reload()', 3000);
+                },
+                error: function () {
+                    alert('Disculpe, existió un problema');
+                }
+            })
+        }
+    }
+</script>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <script>
+            var mensaje = '{{ messages[0] }}';
+            console.log(mensaje);
+            switch (mensaje) {
+                case 'ok':
+                    Swal.fire("Correcto", "Se actualizaron los datos correctamente", "success");
+                    break;
+            }
+        </script>
+    {% endif %}
+{% endwith %}
+{% endblock %}

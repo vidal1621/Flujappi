@@ -1,0 +1,381 @@
+{% extends 'layout/templateBasico.html' %}
+{% block content %}
+<!-- Cuerpo -->
+<div class="nk-content ">
+    <div class="container-fluid">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                    <div class="nk-block-between">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">CUENTAS CORRIENTES</h3>
+                            <div class="nk-block-des text-soft">
+                                <p>{#total de datos 1200#}</p>
+                            </div>
+                        </div><!-- .nk-block-head-content -->
+                        <div class="nk-block-head-content">
+                            <div class="toggle-wrap nk-block-tools-toggle">
+                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
+                                <div class="toggle-expand-content" data-content="pageMenu">
+                                    <ul class="nk-block-tools g-3">
+                                        <li><a href="javascript:agregarCuentasCorrientes()" class="btn btn-outline-success"><em class="ni ni-property-add"></em><span>Agregar Nuevo</span></a></li>
+                                        <!--<li class="nk-block-tools-opt">
+                                            <div class="drodown">
+                                                <a href="#" class="dropdown-toggle btn btn-icon btn-primary" data-toggle="dropdown"><em class="icon ni ni-plus"></em></a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <ul class="link-list-opt no-bdr">
+                                                       &lt;!&ndash; <li><a href="templates/ingresos/notaVenta.html"><span>Agregar Nota</span></a></li>&ndash;&gt;
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </li>-->
+                                    </ul>
+                                </div>
+                            </div><!-- .toggle-wrap -->
+                        </div><!-- .nk-block-head-content -->
+                    </div><!-- .nk-block-between -->
+                </div><!-- .nk-block-head -->
+                <div class="nk-block">
+                    <div class="card card-bordered card-stretch">
+                        <div class="card-inner-group">
+                            <div class="card card-preview">
+                                <div class="card-inner">
+                                    <table class="datatable-init nowrap table">
+                                        <thead>
+                                            <tr>
+                                                <th>Banco</th>
+                                                <th>Numero Cuenta</th>
+                                                <th>Tipo Cuenta</th>
+                                                <th>Estado Cuenta</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% if(cuenta_bancaria=='None') %}
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            {% else %}
+                                            {% for c in dtsctas %}
+                                                <tr>
+                                                    <td>{{ c['banco'] }}</td>
+                                                    <td>{{ c['numero cuenta'] }}</td>
+                                                    <td>{{ c['tipo cuenta'] }}</td>
+                                                    <td><span class="badge badge-success ml-0">Verificada</span></td>
+                                                    {% for cu in cuenta_bancaria %}
+                                                        {% if(c['numero cuenta']==cu[1]) %}
+                                                            <td style="text-align: center"><button type="button" class="btn btn-sm btn-success" onclick="javascript:abrirActualizar('{{ cu[1] }}','{{ cu[7] }}','{{ cu[8] }}','{{ cu[6] }}','{{ cu[9] }}','{{ cu[5] }}');"><em class="icon ni ni-edit-fill"></em> Actualizar</button></td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- .card-inner-group -->
+                    </div><!-- .card -->
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" id="modalNueva">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Acceder a Cuenta Bancaria</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <ul class="nk-nav nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#tabItem1">Datos de la Cuenta</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#tabItem2">Acceso al Banco</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tabItem1">
+                        <div id="estadoBanco"></div>
+                        <div class="form-group">
+                            <label class="form-label">Banco</label>
+                            <div class="form-control-wrap">
+                                <select class="form-control" name="cod_banco" id="cod_banco" onchange="seleccionarTipoCuentas(1)">
+                                    {% for b in banco %}
+                                        <option value="{{ b[0] }}" data-estado="{{ b[6] }}">{{ b[1] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Tipo Cuenta</label><div id="ctaEstado"></div>
+                            <div class="form-control-wrap">
+                                <select class="form-control" id="cod_tipo_cuenta" name="cod_tipo_cuenta" onchange="estadoCuenta()"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Numero de Cuenta</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control" id="desc_cuenta_bancaria" name="desc_cuenta_bancaria" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabItem2">
+                        <div class="form-group">
+                            <label class="form-label">Rut Apoderado</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control" id="rut_apoderado" name="rut_apoderado" onkeypress="return isNumber(event)" oninput="checkRut(this,2,2)">
+                                <input type="hidden" name="estadorut_2" id="estadorut_2" value="0">
+                                <div id="alerta">
+                                    <div id="mensaje2"></div>
+                                </div>
+                            </div>
+                         </div>
+                        <div class="form-group">
+                            <label class="form-label">Contraseña</label>
+                            <div class="form-control-wrap">
+                                <a tabind x="-1" href="#" class="form-icon form-icon-right passcode-switch" data-target="clave_bancaria">
+                                    <em class="passcode-icon icon-show icon ni ni-eye"></em>
+                                    <em class="passcode-icon icon-hide icon ni ni-eye-off"></em>
+                                </a>
+                                <input type="password" class="form-control" id="clave_bancaria" name="clave_bancaria">
+                                <input type="hidden" id="rut_contribuyente" name="rut_contribuyente" value="{{contribuyentes[0]}}">
+                            </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="form-group">
+                        <button type="button" id="btn_guardar" onclick="agregarCuenta()" class="btn btn-lg btn-primary">Conectar</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="modalActualizar">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <label class="form-label">Actualizar Cuenta Bancaria</label>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Banco</label>
+                    <div class="form-control-wrap">
+                        <select class="form-control" name="cod_banco_editar" id="cod_banco_editar"  onchange="seleccionarTipoCuentas(2)"></select>
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label class="form-label">Tipo Cuenta</label>
+                    <div class="form-control-wrap">
+                        <select class="form-control" name="cod_tipo_cuenta_editar" id="cod_tipo_cuenta_editar"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Numero de Cuenta</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="num_cuenta_editar" name="num_cuenta_editar">
+                    </div>
+                </div>
+                <input type="hidden" name="rut_contribuyente_editar" id="rut_contribuyente_editar"/>
+                <div class="form-group">
+                    <label class="form-label">Rut Apoderado</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="rut_apoderado_editar" name="rut_apoderado_editar" onkeypress="return isNumber(event)" oninput="checkRut(this,2,3)">
+                        <input type="hidden" name="estadorut_3" id="estadorut_3" value="0">
+                        <div id="alerta">
+                            <div id="mensaje3"></div>
+                        </div>
+                    </div>
+                 </div>
+                <div class="form-group">
+                    <label class="form-label">Contraseña</label>
+                    <div class="form-control-wrap">
+                        <a tabind x="-1" href="#" class="form-icon form-icon-right passcode-switch" data-target="clave_bancaria_editar">
+                            <em class="passcode-icon icon-show icon ni ni-eye"></em>
+                            <em class="passcode-icon icon-hide icon ni ni-eye-off"></em>
+                        </a>
+                        <input type="password" class="form-control" id="clave_bancaria_editar" name="clave_bancaria_editar" required>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="form-group">
+                        <button type="button" id="btn_actualizar" class="btn btn-success" onclick="actualizarCuenta()">Actualizar</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/assets/js/validarRut.js" type="text/javascript"></script>
+<script>
+    function seleccionarTipoCuentas(accion){
+        if(accion==1){
+            var cod = $("#cod_banco").val();
+            var select = $("#cod_tipo_cuenta");
+        }else{
+            var cod = $("#cod_banco_editar").val();
+            var select = $("#cod_tipo_cuenta_editar");
+        }
+        var html='';
+        {% for t in tipo_cuenta %}
+            var tipo = '{{ t[5] }}';
+            if(cod==tipo){
+                html += `<option value="{{ t[0] }}" data-estadocta="{{ t[6] }}">{{ t[1] }}</option>`;
+                if('{{ t[6] }}'=='activo'){
+                    $("#ctaEstado").html("");
+                }else{
+                     $("#ctaEstado").html("<span class='badge badge-primary'>La cuenta NO se encuentra activa para su uso</span>");
+                }
+            }
+        {% endfor %}
+        select.html(html);
+        estadoCuenta();
+
+        var estado = $('select#cod_banco').find(':selected').data('estado');
+        if(estado=='no activo'){
+            $("#estadoBanco").html("<span class='badge badge-warning'>Su cuenta se encontrará disponible en 24 hrs.</span>")
+        }else{
+            $("#estadoBanco").html("")
+        }
+    }
+
+    function estadoCuenta(){
+        var x = $('select#cod_tipo_cuenta').find(':selected').data('estadocta');
+        console.log(x)
+        if(x=='activo'){
+            $("#ctaEstado").html("");
+        }else{
+            $("#ctaEstado").html("<span class='badge badge-primary'>La cuenta NO se encuentra activa para su uso</span>");
+        }
+    }
+
+    function agregarCuentasCorrientes(){
+        $('#modalNueva').modal('show');
+        seleccionarTipoCuentas(1);
+    }
+
+    function abrirActualizar(num_cuenta_editar,rut_apoderado_editar,clave_bancaria_editar,cod_banco_editar,cod_tipo_cuenta_editar,rut_contribuyente_editar){
+        $('#modalActualizar').modal('show');
+        $("#num_cuenta_editar").val(num_cuenta_editar);
+        $("#rut_apoderado_editar").val(rut_apoderado_editar);
+        $("#clave_bancaria_editar").val(clave_bancaria_editar);
+        $("#rut_contribuyente_editar").val(rut_contribuyente_editar);
+        checkRut(rut_apoderado_editar,2,3);
+
+        var select1 = '';
+        select1 += `{% for b in banco %}`;
+            var ban = '{{ b[0] }}';
+            if(ban==cod_banco_editar) {
+                select1 += `<option value="{{ b[0] }}" selected>{{ cod_banco_editar }} {{ b[1] }}</option>`;
+            }else{
+                select1 += `<option value="{{ b[0] }}">{{ cod_banco_editar }} {{ b[1] }}</option>`;
+            }
+        select1 += `{% endfor %}`;
+        $("#cod_banco_editar").html(select1)
+        seleccionarTipoCuentas(2);
+
+        {#var select2 = '';
+        select2 += `{% for t in tipo_cuenta %}`;
+        var tip = '{{ t[0] }}';
+        var banco = '{{ t[5] }}';
+        if(cod_banco_editar==banco){
+            if(tip==cod_tipo_cuenta_editar) {
+                select2 += `<option value="{{ t[0] }}" selected>{{ t[1] }}</option>`;
+            }else{
+                select2 += `<option value="{{ t[0] }}">{{ t[1] }}</option>`;
+            }
+        }
+        select2 += `{% endfor %}`;
+        $("#cod_tipo_cuenta_editar").html(select2)#}
+    }
+
+    function agregarCuenta(){
+        if($("#desc_cuenta_bancaria").val()==''){
+            Swal.fire("Alerta", "Debe ingresar cuenta bancaria", "warning");
+        }else if($("#clave_bancaria").val()=='') {
+            Swal.fire("Alerta", "Debe ingresar clave bancaria", "warning");
+        }else if($("#estadorut_1").val()==0){
+            Swal.fire("Alerta", "Rut Persona es incorrecto", "warning");
+        }else if($("#estadorut_2").val()==0){
+            Swal.fire("Alerta", "Rut Apoderado es incorrecto", "warning");
+        }else {
+            var data = {
+                "cod_tipo_cuenta": $("#cod_tipo_cuenta").val(),
+                "desc_cuenta_bancaria": $("#desc_cuenta_bancaria").val(),
+                "rut_contribuyente": $("#rut_contribuyente").val(),
+                "cod_banco": $("#cod_banco").val(),
+                "rut_apoderado": $("#rut_apoderado").val(),
+                "clave_bancaria": $("#clave_bancaria").val()
+            }
+            $.ajax({
+                type: "post",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                url: '/cuenta/cuentasCorrientes/'+$("#rut_contribuyente").val(),
+                success: function (respuesta) {
+                    Swal.fire("Correcto", "Se agrego la cuenta correctamente", "success");
+                    $("#btn_guardar").hide();
+                    setTimeout('document.location.reload()', 3000);
+                },
+                error: function () {
+                    alert('Disculpe, existió un problema');
+                }
+            })
+        }
+    }
+
+    function actualizarCuenta(){
+         if($("#num_cuenta_editar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar cuenta bancaria", "warning");
+        }else if($("#clave_editar").val()=='') {
+            Swal.fire("Alerta", "Debe ingresar clave bancaria", "warning");
+        }else if($("#estadorut_3").val()==0){
+            Swal.fire("Alerta", "Rut Apoderado es incorrecto", "warning");
+        }else {
+            var data={
+                "desc_cuenta_bancaria":$("#num_cuenta_editar").val(),
+                "cod_banco": $("#cod_banco_editar").val(),
+                "rut_apoderado":$("#rut_apoderado_editar").val(),
+                "clave_bancaria": $("#clave_bancaria_editar").val(),
+                "cod_tipo_cuenta":$("#cod_tipo_cuenta_editar").val(),
+                "rut_contribuyente":$("#rut_contribuyente_editar").val()
+            }
+
+            $.ajax({
+                type: "update",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                url: '/cuenta/cuentasCorrientes/'+$("#rut_contribuyente_editar").val(),
+                success: function (respuesta) {
+                    Swal.fire("Correcto", "La cuenta se actualizo correctamente", "success");
+                    $("#btn_actualizar").hide();
+                    setTimeout('document.location.reload()',3000);
+                },
+                error: function () {
+                    alert('Disculpe, existió un problema');
+                }
+            })
+        }
+    }
+</script>
+<!-- content @e -->
+{% endblock %}

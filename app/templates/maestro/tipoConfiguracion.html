@@ -1,0 +1,186 @@
+{% extends 'layout/templateBasico.html' %}
+{% block content %}
+<!-- Cuerpo -->
+<div class="nk-content ">
+    <div class="container-fluid">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                    <div class="nk-block-between">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">LISTADO TIPO CONFIGURACIÓN</h3>
+                            <div class="nk-block-des text-soft">
+                                <p></p>
+                            </div>
+                        </div><!-- .nk-block-head-content -->
+                        <div class="nk-block-head-content">
+                            <div class="toggle-wrap nk-block-tools-toggle">
+                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
+                                <div class="toggle-expand-content" data-content="pageMenu">
+                                    <ul class="nk-block-tools g-3">
+                                        <li><a href="javascript:verModal('modalNueva','Agregar Tipo Configuración')" class="btn btn-outline-success"><em class="ni ni-property-add"></em><span>Agregar Nuevo</span></a></li>
+                                        <!--<li class="nk-block-tools-opt">
+                                            <div class="drodown">
+                                                <a href="#" class="dropdown-toggle btn btn-icon btn-primary" data-toggle="dropdown"><em class="icon ni ni-plus"></em></a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <ul class="link-list-opt no-bdr">
+                                                       &lt;!&ndash; <li><a href="templates/ingresos/notaVenta.html"><span>Agregar Nota</span></a></li>&ndash;&gt;
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </li>-->
+                                    </ul>
+                                </div>
+                            </div><!-- .toggle-wrap -->
+                        </div><!-- .nk-block-head-content -->
+                    </div><!-- .nk-block-between -->
+                </div><!-- .nk-block-head -->
+                <div class="nk-block">
+                    <div class="card card-bordered card-stretch">
+                        <div class="card-inner-group">
+                            <div class="card card-preview">
+                                <div class="card-inner">
+                                    <table class="datatable-init nowrap table">
+                                        <thead>
+                                            <tr>
+                                                <th>Código Tipo Configuración</th>
+                                                <th>Días Configuración</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for d in tipo_configuracion %}
+                                            <tr>
+                                                <td>{{ d[0] }}</td>
+                                                <td>{{ d[1] }}</td>
+                                                <td style="text-align: center"><button type="button" class="btn btn-sm btn-success" onclick="javascript:actualizarConfiguraciones('{{d[0]}}','{{d[1]}}');"><em class="icon ni ni-edit-fill"></em> Actualizar</button></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- .card-inner-group -->
+                    </div><!-- .card -->
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="modalNueva">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titulo"></h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Tipo Configuración</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="desc_tipo_configuracion" name="desc_tipo_configuracion" required />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="form-group">
+                        <button type="button" id="btn_guardar" onclick="agregarTipo()" class="btn btn-lg btn-primary">Guardar</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="modalActualizar">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <label class="form-label">Actualizar Estado Documento</label>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Tipo Configuración</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="tipo_estado_editar" name="tipo_estado_editar" required />
+                        <input type="hidden" class="form-control" id="cod_estado_editar" name="cod_estado_editar" required />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="form-group">
+                        <button type="button" id="btn_actualizar" class="btn btn-success" onclick="actualizartipoConfiguracion()">Actualizar</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function verModal(elemento,titulo,accion) {
+        $('#' + elemento + '').appendTo('body').modal('show');
+        $("#titulo").html(titulo);
+    }
+
+    function actualizarConfiguraciones(cod_tipo_doc,nombre){
+        $('#modalActualizar').modal('show');
+        $("#cod_estado_editar").val(cod_tipo_doc)
+        $("#tipo_estado_editar").val(nombre)
+    }
+
+    function agregarTipo(){
+        if($("#desc_tipo_configuracion").val()==''){
+            Swal.fire("Alerta", "debe ingresar tipo configuración", "warning");
+        }else {
+            var data = {
+                "desc_tipo_configuracion": $("#desc_tipo_configuracion").val()
+            }
+            $.ajax({
+                type: "post",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                url: '/documento/tipoConfiguracion',
+                success: function (respuesta) {
+                    Swal.fire("Correcto", "El tipo de configuración se guardo correctamente", "success");
+                    $("#btn_guardar").hide();
+                    setTimeout('document.location.reload()', 3000);
+                },
+                error: function () {
+                    alert('Disculpe, existió un problema');
+                }
+            })
+        }
+    }
+
+    function actualizartipoConfiguracion(){
+         if($("#tipo_estado_editar").val()==''){
+            Swal.fire("Alerta", "debe ingresar tipo configuración", "warning");
+         }else {
+             var data = {
+                 "desc_tipo_configuracion": $("#tipo_estado_editar").val(),
+                 "cod_tipo_configuracion": $("#cod_estado_editar").val()
+             }
+             $.ajax({
+                 type: "update",
+                 contentType: 'application/json',
+                 data: JSON.stringify(data),
+                 url: '/documento/tipoConfiguracion',
+                 success: function (respuesta) {
+                     Swal.fire("Correcto", "El tipo de configuración se actualizo correctamente", "success");
+                     $("#btn_actualizar").hide();
+                     setTimeout('document.location.reload()', 3000);
+                 },
+                 error: function () {
+                     alert('Disculpe, existió un problema');
+                 }
+             })
+         }
+    }
+</script>
+<!-- content @e -->
+{% endblock %}

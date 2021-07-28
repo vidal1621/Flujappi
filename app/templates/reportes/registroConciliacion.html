@@ -1,0 +1,128 @@
+{% extends 'layout/templateBasico.html' %}
+{% block content %}
+<!-- Cuerpo -->
+<div class="nk-content ">
+    <div class="container-fluid">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                    <div class="nk-block-between">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">LISTADO DE CONCILIACIONES - {{contribuyentes[0][1]}}</h3>
+                            <div class="nk-block-des text-soft">
+                                <!--<p>total de datos 1200.</p>-->
+                            </div>
+                        </div><!-- .nk-block-head-content -->
+                        <div class="nk-block-head-content">
+                            <div class="toggle-wrap nk-block-tools-toggle">
+                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
+                                <div class="toggle-expand-content" data-content="pageMenu" data-toggle="tooltip" data-placement="top" title="Desde SII">
+                                    <ul class="nk-block-tools g-3">
+                                    </ul>
+                                </div>
+                            </div><!-- .toggle-wrap -->
+                        </div><!-- .nk-block-head-content -->
+                    </div><!-- .nk-block-between -->
+                </div><!-- .nk-block-head -->
+                <div class="nk-block">
+                    <div class="nk-block nk-block-lg">
+                        <div class="row">
+                                {#<div class="col-xl-3 col-lg-3 col-12">
+                                    <div class="nk-order-ovwg-data buy">
+                                        <div class="amount">{% if (totalCompras) %} {{"{:,.0f}".format(totalCompras[0]).replace(',','.')}} {%else%} 0 {% endif %}<small class="currenct currency-usd">CLP</small></div>
+                                        <div class="title"><em class="icon ni ni-arrow-down-left"></em> Total Compras Anual + IVA</div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-lg-3 col-12">
+                                    <div class="nk-order-ovwg-data sell">
+                                        <div class="amount">{% if (cantidadTotalAnual) %} {{"{:,.0f}".format(cantidadTotalAnual[0])}}{%else%} 0 {% endif %}</div>
+                                        <div class="title"><em class="icon ni ni-arrow-up-left"></em> Cantidad de Facturas Anual</div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-lg-3 col-12">
+                                    <div class="nk-order-ovwg-data buy">
+                                        <div class="amount">{% if (clientesUnicosComprasMensuales)%}{{clientesUnicosComprasMensuales[0]}}{%else%} 0 {%endif%}<small class="currenct currency-usd"></small></div>
+                                        <div class="title"><em class="icon ni ni-arrow-down-left"></em> Clientes Únicos Mensual</div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-lg-3 col-12">
+                                    <div class="nk-order-ovwg-data sell">
+                                        <div class="amount">{% if (clientesUnicosComprasAnuales)%}{{clientesUnicosComprasAnuales[0]}}{%else%} 0 {%endif%}</div>
+                                        <div class="title"><em class="icon ni ni-arrow-up-left"></em> Clientes Únicos Anual</div>
+                                    </div>
+                                </div>
+                            #}
+                        </div><!-- .col -->
+                    </div>
+                    <br>
+                    <div class="card card-bordered card-stretch">
+                        <div class="card-inner-group">
+                            <div class="card card-preview">
+                                <div class="card-inner">
+                                    <table class="datatable-init-export nowrap table">
+                                        <thead>
+                                            <tr>
+                                                <th>Folio</th>
+                                                <th>Cliente</th>
+                                                <th>Fecha de Emisión</th>
+                                                <th>Fecha Estimada Pago</th>
+                                                <th>Tipo</th>
+                                                <th>Monto SII</th>
+                                                <th>Descripción Bancaria</th>
+                                                <th>Fecha Movimiento</th>
+                                                <th>Monto Bancario</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for v in conciliacionesCompra %}
+                                                {% set fechaEm = (v[3] | string).split('-') %}
+                                                {% set fechaEmision = fechaEm[2]~'-'~fechaEm[1]~'-'~fechaEm[0] %}
+                                                {% set fechaEs = (v[4] | string).split('-') %}
+                                                {% set fechaEstimada = fechaEs[2]~'-'~fechaEs[1]~'-'~fechaEs[0] %}
+                                                {% set fechaMov = (v[13] | string).split('-') %}
+                                                {% set fechaMovimiento = fechaMov[2]~'-'~fechaMov[1]~'-'~fechaMov[0] %}
+                                                <tr>
+                                                    <td>{{ v[0] }}</td>
+                                                    <td>{{ v[2] }} {{ v[7] }}</td>
+                                                    <td>{{ fechaEmision }}</td>
+                                                    <td>{{ fechaEstimada }}</td>
+                                                    <td>Compra</td>
+                                                    <td style="text-align: right">{{ "{:,.0f}".format(v[5]|int).replace(',','.') }}</td>
+                                                    <td>{{ v[12]}}</td>
+                                                    <td>{{ fechaMovimiento }}</td>
+                                                    <td style="text-align: right">{{ "{:,.0f}".format(v[14]|int).replace(',','.') }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            {% for v in conciliacionesVenta %}
+                                                {% set fechaEm = (v[3] | string).split('-') %}
+                                                {% set fechaEmision = fechaEm[2]~'-'~fechaEm[1]~'-'~fechaEm[0] %}
+                                                {% set fechaEs = (v[4] | string).split('-') %}
+                                                {% set fechaEstimada = fechaEs[2]~'-'~fechaEs[1]~'-'~fechaEs[0] %}
+                                                {% set fechaMov = (v[13] | string).split('-') %}
+                                                {% set fechaMovimiento = fechaMov[2]~'-'~fechaMov[1]~'-'~fechaMov[0] %}
+                                                <tr>
+                                                    <td>{{ v[0] }}</td>
+                                                    <td>{{ v[1] }} {{ v[7] }}</td>
+                                                    <td>{{ fechaEmision }}</td>
+                                                    <td>{{ fechaEstimada }}</td>
+                                                    <td>Venta</td>
+                                                    <td style="text-align: right">{{ "{:,.0f}".format(v[5]|int).replace(',','.') }}</td>
+                                                    <td>{{ v[12]}}</td>
+                                                    <td>{{ fechaMovimiento }}</td>
+                                                    <td style="text-align: right">{{ "{:,.0f}".format(v[14]|int).replace(',','.') }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- .card-inner-group -->
+                    </div><!-- .card -->
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+{#URL DEL SITIO EN EL QUE ESTOY#}
+<input type="hidden" name="urlCambiarEmpresa" id="urlCambiarEmpresa" value="reporte/registroConciliacion">
+{% endblock %}

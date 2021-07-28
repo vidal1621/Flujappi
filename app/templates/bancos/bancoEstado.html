@@ -1,0 +1,834 @@
+{% extends 'layout/templateBasico.html' %}
+{% block content %}
+    <!-- Cuerpo -->
+    <div class="nk-content ">
+        <div class="container-fluid">
+            <div class="nk-content-inner">
+                <div class="nk-content-body">
+                    <div class="nk-block-head nk-block-head-sm">
+                        <div class="nk-block-between">
+                            <div class="nk-block-head-content">
+                                <h3 class="nk-block-title page-title">BANCO ESTADO - {{ contribuyentes[0][1] }}</h3>
+                                <div class="nk-block-des text-soft">
+                                    <p></p>
+                                </div>
+                            </div><!-- .nk-block-head-content -->
+                            <div class="nk-block-head-content">
+                                <div class="toggle-wrap nk-block-tools-toggle">
+                                    <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1"
+                                       data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
+                                    <div class="toggle-expand-content" data-content="pageMenu" data-toggle="tooltip"
+                                         data-placement="top" title="Desde Banco">
+                                        <ul class="nk-block-tools g-3">
+                                            <li>
+                                                {#<form method="post">#}
+                                                    <div class="row">
+                                                        <div>
+                                                            <div class="form-group">
+                                                                <label class="form-label">Seleccionar Fecha</label>
+                                                                <div class="form-control-wrap">
+                                                                    <div class='input-group date' id='datetimepicker10'>
+                                                                        <input type='text'
+                                                                               class="form-control fechaVista"
+                                                                               id="fechaVista"
+                                                                               data-date-format="mm-yyyy"/>
+                                                                        <div class="input-group-append">
+                                                                            <span class="input-group-text">
+                                                                              <span class="icon ni ni-calendar"></span>
+                                                                            </span>
+                                                                        </div>
+                                                                        <input type="hidden" name="fin" id="fin"
+                                                                               value="">
+                                                                        <input type="hidden" name="inicio" id="inicio"
+                                                                               value="">
+                                                                        <input type="hidden" id="mes" name="mes">
+                                                                        <input type="hidden" id="anio" name="anio"
+                                                                               value="{{ anio_actual }}">
+                                                                        <button onclick="solicitudActualizarBanco()" type="button"
+                                                                                class="btn btn-outline-success"
+                                                                                id="btn_actualizar"><em
+                                                                                class="icon ni ni-update"></em><span>Actualizar</span>
+                                                                        </button>
+                                                                    </div>
+
+                                                                    {#<div class="input-daterange date-picker input-group">
+                                                                        <input type="text"
+                                                                               class="form-control date-picker-alt fechaVista"
+                                                                               id="fechaVista"
+                                                                               data-date-format="mm-yyyy" required>
+
+                                                                    </div>#}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {#</form>#}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div><!-- .toggle-wrap -->
+                            </div><!-- .nk-block-head-content -->
+                        </div><!-- .nk-block-between -->
+                    </div><!-- .nk-block-head -->
+                    <div class="nk-block">
+                        <div class="row g-gs">
+                            <div class="col-xl-3 col-lg-3 col-12">
+                                <div class="card card-bordered card-full">
+                                    <div class="card-inner">
+                                        <div class="card-title-group align-start mb-0">
+                                            <div class="card-title">
+                                                <h6 class="subtitle">Total Conciliaciones <span id="nombreMesConciliadas"></span></h6>
+                                            </div>
+                                            <div class="card-tools">
+                                                <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip" data-placement="left" title="Total Conciliaciones"></em>
+                                            </div>
+                                        </div>
+                                        <div class="card-amount">
+                                            <span class="amount" id="montoConciliado"></span>
+                                        </div>
+                                        <div class="invest-data">
+                                            <div class="invest-data-amount g-2">
+                                                <div class="invest-data-history">
+                                                    <div class="title">Movimientos Conciliados</div>
+                                                    <div class="amount" id="cantidadConciliada"> <span class="currency currency-usd"></span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!-- .card -->
+                            </div><!-- .col -->
+                            <div class="col-xl-3 col-lg-3 col-12">
+                                <div class="card card-bordered card-full">
+                                    <div class="card-inner">
+                                        <div class="card-title-group align-start mb-0">
+                                            <div class="card-title">
+                                                <h6 class="subtitle">Total Cargos <span id="nombreMesCargo"></span></h6>
+                                            </div>
+                                            <div class="card-tools">
+                                                <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip" data-placement="left" title="Total Cargos"></em>
+                                            </div>
+                                        </div>
+                                        <div class="card-amount">
+                                            <span class="amount" id="montoCargo"></span>
+                                        </div>
+                                    </div>
+                                </div><!-- .card -->
+                            </div><!-- .col -->
+                            <div class="col-xl-3 col-lg-3 col-12">
+                                <div class="card card-bordered card-full">
+                                    <div class="card-inner">
+                                        <div class="card-title-group align-start mb-0">
+                                            <div class="card-title">
+                                                <h6 class="subtitle">Total Abonos <span id="nombreMesAbono"></span></h6>
+                                            </div>
+                                            <div class="card-tools">
+                                                <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip" data-placement="left" title="Total Abonos"></em>
+                                            </div>
+                                        </div>
+                                        <div class="card-amount">
+                                            <span class="amount" id="montoAbono"></span>
+                                        </div>
+                                    </div>
+                                </div><!-- .card -->
+                            </div><!-- .col -->
+                            <div class="col-xl-3 col-lg-3 col-12">
+                                <div class="card card-bordered card-full">
+                                    <div class="card-inner">
+                                        <div class="card-title-group align-start mb-0">
+                                            <div class="card-title">
+                                                <h6 class="subtitle">Total Saldo Actual</h6>
+                                            </div>
+                                            <div class="card-tools">
+                                                <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip" data-placement="left" title="Total Saldo"></em>
+                                            </div>
+                                        </div>
+                                        <div class="card-amount">
+                                            <span class="amount">{% if(ctaBancariaEstadoEmpresa) %}
+                                            {{ "{:,.0f}".format(ctaBancariaEstadoEmpresa[6]).replace(',','.') }}{% else %}
+                                            0{% endif %} CLP</span>
+                                        </div>
+                                    </div>
+                                </div><!-- .card -->
+                            </div><!-- .col -->
+                        </div>
+                        <br>
+
+
+                           {# <div class="col-lg-3 col-3 col-sm-3">
+                                <div class="nk-order-ovwg-data buy preview-icon-box">
+                                    <div>
+                                        <div style="text-align: right">
+                                            <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip"
+                                                data-placement="left" title="" data-original-title="Total Movimientos Conciliados"></em>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: center">
+                                        <img src="/static/assets/images/cargo.png" height="70px"
+                                             alt="insertar SVG con la etiqueta image">
+                                    </div>
+                                    <div class="amount">Conciliados <span id="nombreMes3"></span><span class="amount"
+                                                                                                 id="totalConciliadas"></span>
+                                        <span class="amount" id="totalConciliadasHistorico"></span></div>
+                                </div>
+                            </div><!-- .col -->
+                            <div class="col-lg-3 col-3 col-sm-3">
+                                <div class="nk-order-ovwg-data buy preview-icon-box">
+                                    <div>
+                                        <div style="text-align: right">
+                                            <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip"
+                                                data-placement="left" title="" data-original-title="Cargos"></em>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: center">
+                                        <img src="/static/assets/images/cargo.png" height="70px"
+                                             alt="insertar SVG con la etiqueta image">
+                                    </div>
+                                    <div class="amount">Cargos <span id="nombreMes"></span><span class="amount"
+                                                                                                 id="totalCargoHistorico"></span>
+                                        <span class="amount" id="totalCargo"></span></div>
+                                </div>
+                            </div><!-- .col -->
+                            <div class="col-lg-3 col-3 col-sm-3">
+                                <div class="nk-order-ovwg-data buy preview-icon-box">
+                                    <div>
+                                        <div style="text-align: right">
+                                            <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip"
+                                                data-placement="left" title="" data-original-title="Abonos"></em>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: center">
+                                        <img src="/static/assets/images/abono.png" height="70px"
+                                             alt="insertar SVG con la etiqueta image">
+                                    </div>
+                                    <div class="amount">Abonos <span id="nombreMes2"></span><span class="amount"
+                                                                                                  id="totalAbonoHistorico"></span>
+                                        <span class="amount" id="totalAbono"></span></div>
+                                </div><!-- .preview-icon-box -->
+                            </div><!-- .col -->
+                            <div class="col-lg-3 col-3 col-sm-3">
+                                <div class="nk-order-ovwg-data buy preview-icon-box">
+                                    <div>
+                                        <div style="text-align: right">
+                                            <form method="post">
+                                                <button class="btn btn-xs btn-success" type="submit" id="saldos"
+                                                        name="saldos"><em class="icon ni ni-reload ni-xs"
+                                                                          data-toggle="tooltip" data-placement="left"
+                                                                          title=""
+                                                                          data-original-title="Actualizar"></em>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: center">
+                                        <img src="/static/assets/images/dinero.png" height="70px"
+                                             alt="insertar SVG con la etiqueta image">
+                                    </div>
+                                    <div class="amount">Saldo Actual<span
+                                            class="amount">{% if(ctaBancariaEstadoEmpresa) %}
+                                        {{ "{:,.0f}".format(ctaBancariaEstadoEmpresa[6]).replace(',','.') }}{% else %}
+                                        0{% endif %}
+                                        CLP</span>
+                                    </div>
+                                </div><!-- .preview-icon-box -->
+                            </div><!-- .col -->
+                        </div>
+                        <br>#}
+                        <div class="card card-bordered card-stretch">
+                            <div class="card-inner-group">
+                                <div class="card card-preview">
+                                    <div class="card-inner">
+                                        <div style="text-align: left">
+                                            <div class="col-xl-3 col-lg-3 col-12">
+                                                <label>Seleccionar Período</label>
+                                                <select class="form-control" name="mesAnio" id="mesAnio"
+                                                        onchange="filtrarporPeriodo()">
+                                                    <option value="sindatos">Seleccione una fecha</option>
+                                                    {% for foo in cartolaHistorica %}
+                                                        {% set separar = foo[1].split('-') %}
+                                                        <option value="{{ foo[1] }}">{{ separar[0] }}
+                                                            de {{ separar[1] }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        {#<div style="text-align: right">
+                                            {% for foo in cartolaHistorica  %}
+                                            {% set separar = foo[1].split('-') %}
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" checked disabled>
+                                                    <label class="custom-control-label" for="customCheck2" style="color: #b6c6e3">Cartola {{ separar[0] }} de {{ separar[1] }}</label>
+                                                </div>
+                                            {% endfor %}
+                                        </div>#}
+                                        <hr>
+                                        <div class="tablaaa"></div>
+                                        {#<div id="tabla">
+                                            <table class="datatable-init-export nowrap table" id="tablaBancos">
+                                                <thead>
+                                                <tr>
+                                                    <th>Número Documento</th>
+                                                    <th>Descripción</th>
+                                                    <th>Fecha</th>
+                                                    <th>Cargo</th>
+                                                    <th>Abono</th>
+                                                    <th>Conciliar</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for mb in movimiento_cb %}
+                                                    {% set fechaE = (mb[10] | string).split('-') %}
+                                                    {% set fechaEditada = fechaE[2]~'-'~fechaE[1]~'-'~fechaE[0] %}
+                                                    <tr>
+                                                        <td>{{ mb[6] }}</td>
+                                                        <td>{{ mb[1] }}</td>
+                                                        <td>{{ fechaEditada }}</td>
+                                                        <td style="text-align: right">{{ "{:,.0f}".format(mb[7]).replace(',','.') }}</td>
+                                                        <td style="text-align: right">{{ "{:,.0f}".format(mb[8]).replace(',','.') }}</td>
+                                                        <td style="text-align: center">
+                                                            {% if(mb[12]=='no conciliada') %}
+                                                            <button class="btn btn-sm btn-primary"
+                                                                    onclick="conciliar('{{ mb[0] }}','{{ mb[1] }}','{{ fechaEditada }}','{{ (mb[7]|int) }}','{{ (mb[8]|int) }}')">
+                                                                <em class="icon ni ni-tranx"></em> Conciliar
+                                                            </button>
+                                                            {% else %}
+
+                                                                {% for v in conciliacionesBancariasCompras %}
+                                                                    {% if(mb[0]==v[8]) %}
+                                                                        {% set fechaMovEm = (v[5] | string).split('-') %}
+                                                                        {% set fechaEmision = fechaMovEm[2]~'-'~fechaMovEm[1]~'-'~fechaMovEm[0] %}
+                                                                        {% set fechaMovEs = (v[6] | string).split('-') %}
+                                                                        {% set fechaEstimada = fechaMovEs[2]~'-'~fechaMovEs[1]~'-'~fechaMovEs[0] %}
+                                                                        <a href="javascript:conciliar('{{ mb[0] }}','{{mb[1]}}','{{ fechaEditada }}','{{ (mb[7]|int) }}','{{ mb[8]|int }}','conciliada','{{ v[3] }}','{{ v[9] }}','{{ fechaEmision }}','{{ fechaEstimada }}','{{ v[7]|int }}')"><span class="badge badge-dot badge-success">Conciliada</span></a>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                                {% for v in conciliacionesBancariasVentas %}
+                                                                    {% if(mb[0]==v[8]) %}
+                                                                        {% set fechaMovEm = ([5] | string).split('-') %}
+                                                                        {% set fechaEmision = fechaMovEm[2]~'-'~fechaMovEm[1]~'-'~fechaMovEm[0] %}
+                                                                        {% set fechaMovEs = ([6] | string).split('-') %}
+                                                                        {% set fechaEstimada = fechaMovEs[2]~'-'~fechaMovEs[1]~'-'~fechaMovEs[0] %}
+                                                                        <a href="javascript:conciliar('{{ mb[0] }}','{{mb[1]}}','{{ fechaEditada }}','{{ (mb[7]|int) }}','{{ mb[8]|int }}','conciliada','{{ v[4] }}','{{ v[9] }}','{{ fechaEmision }}','{{ fechaEstimada }}','{{ v[7]|int }}')"><span class="badge badge-dot badge-success">Conciliada</span></a>
+                                                                    {% endif %}
+                                                                {% endfor %}
+
+                                                                <input type="hidden" id="numeroConciliadas" value="conciliadas">
+                                                                <input type="hidden" class="MontoConciliadas" value="{{ (mb[7]|int)+(mb[8]|int) }}">
+                                                            {% endif %}
+                                                        </td>
+                                                        <input type="hidden" class="cargo" value="{{ mb[7] }}">
+                                                        <input type="hidden" class="abono" value="{{ mb[8] }}">
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div id="tabla2" style="display: none">
+                                            <table class="datatable-init-export nowrap table">
+                                                <thead>
+                                                <tr>
+                                                    <th>Número Documento</th>
+                                                    <th>Descripción</th>
+                                                    <th>Fecha</th>
+                                                    <th>Cargo</th>
+                                                    <th>Abono</th>
+                                                    <th>Conciliar</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="cuerpoTabla"></tbody>
+                                            </table>
+                                        </div>#}
+                                    </div>
+                                </div>
+                            </div><!-- .card-inner-group -->
+                        </div><!-- .card -->
+                    </div><!-- .nk-block -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" id="modalConciliar">
+        <div class="modal-dialog modal-dialog-top modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Conciliar Movimiento Bancario</h4>
+                    <button onclick="limpiarDatos()" class="close" data-dismiss="modal" aria-label="Close">
+                        <em class="icon ni ni-cross"></em>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner">
+                                    <div class="card-title-group align-start mb-0">
+                                        <div class="card-title">
+                                            <h6 class="subtitle" id="descripcionMovimiento"
+                                                style="color:#f4bd0e"></h6>
+                                        </div>
+                                    </div>
+                                    <div class="card-amount">
+                                        <span class="amount" id="montoMovimiento"></span>
+                                    </div>
+                                    <div class="invest-data">
+                                        <div class="invest-data-amount g-2">
+                                            <div class="invest-data-history">
+                                                <div class="title">Fecha Movimiento</div>
+                                                <div class="amount" id="fechaMovimiento"></div>
+                                            </div>
+                                            <div class="invest-data-history">
+                                                <div class="title">Monto por Asignar</div>
+                                                <div class="amount" id="montoRestante"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .card -->
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner">
+                                    <div class="card-title-group align-start mb-0">
+                                        <div class="card-title">
+                                            <h6 class="subtitle" id="rut" style="color:#1ee0ac !important"></h6>
+                                        </div>
+                                        <div class="card-tools">
+                                            <em class="card-hint icon ni ni-trash-fill" onclick="limpiarDatos()"
+                                                style="color:#e85347" data-toggle="tooltip" data-placement="left"
+                                                title="" data-original-title="Eliminar Movimiento"></em>
+                                        </div>
+                                    </div>
+                                    <div class="card-amount">
+                                        <span class="amount" id="monto"></span>
+                                    </div>
+                                    <div class="invest-data">
+                                        <div class="invest-data-amount g-2">
+                                            <div class="invest-data-history">
+                                                <div class="title">Fecha de Emisión</div>
+                                                <div class="amount" id="fechaEmision"></div>
+                                            </div>
+                                            <div class="invest-data-history">
+                                                <div class="title">Fecha de Vencimiento</div>
+                                                <div class="amount" id="fechaVcto"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .card -->
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-6" style="text-align: right">
+                            <div class="form-group">
+                                <button type="button" id="btnConciliar" class="btn btn-sm btn-primary"
+                                        style="display: none" onclick="agregarConciliacion()"><em
+                                        class="icon ni ni-tranx"></em> Conciliar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner">
+                                    <h4 class="title" style="text-align: center">Compras - Ventas</h4>
+                                    <hr>
+                                    <div class="table-responsive">
+                                        <table class="datatable-init-export nowrap table">
+                                            <thead>
+                                            <tr>
+                                                <th>Folio</th>
+                                                <th>Cliente</th>
+                                                <th>Tipo</th>
+                                                <th>Fecha Emisión</th>
+                                                <th>Fecha Vcto</th>
+                                                <th>Monto</th>
+                                                <th>Monto Por Asignar</th>
+                                                <th style="text-align: center">Conciliar</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for foo in compra_cv %}
+                                                {% set fechaM = (foo[3] | string).split('-') %}
+                                                {% set fechaMovimiento = fechaM[2]~'-'~fechaM[1]~'-'~fechaM[0] %}
+                                                {% set fechaV = (foo[4] | string).split('-') %}
+                                                {% set fechaEstimada = fechaV[2]~'-'~fechaV[1]~'-'~fechaV[0] %}
+                                                {% set monto = foo[5] %}
+                                                <tr id="fila_{{ loop.index0 }}">
+                                                    <input type="hidden" id="totalMovimientoCompraVentaSugerido" class="totalMovimientoCompraVentaSugerido" value="{{ monto|int }}">
+                                                    <td>{{ foo[0] }}</td>
+                                                    <td>{{ foo[2] }} {{ foo[7] }}</td>
+                                                    <td><span class="badge badge-info">Compra</span></td>
+                                                    <td>{{ fechaMovimiento }}</td>
+                                                    <td>{{ fechaEstimada }}</td>
+                                                    <td style="text-align: right">
+                                                        <span id="sugerenciaMostrarCompra_{{ loop.index0 }}" class="sugerenciaMostrar{{ monto|int }}"></span>
+                                                        {{ "{:,.0f}".format(monto).replace(',','.') }}</td>
+                                                    <td></td>
+                                                    <td style="text-align: center">
+                                                        {% if(foo[6]=='no conciliada') %}
+                                                        <button class="btn btn-sm btn-dim btn-info" onclick="movimientoCompraVenta('{{ foo[0] }}','{{ foo[2] }}','{{ foo[7] }}','{{ fechaMovimiento }}','{{ fechaEstimada }}','{{ monto|int }}')">Seleccionar</button>
+                                                        {% else %}<span class="badge badge-dot badge-success">Conciliado</span>
+                                                    {% endif %}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            {% for foo in venta_cv %}
+                                                {% set fechaM = (foo[3] | string).split('-') %}
+                                                {% set fechaMovimiento = fechaM[2]~'-'~fechaM[1]~'-'~fechaM[0] %}
+                                                {% set fechaV = (foo[4] | string).split('-') %}
+                                                {% set fechaEstimada = fechaV[2]~'-'~fechaV[1]~'-'~fechaV[0] %}
+                                                {% set monto = foo[5] %}
+                                                <tr id="{{ loop.index0 }}">
+                                                    <input type="hidden" id="totalMovimientoCompraVentaSugerido" class="totalMovimientoCompraVentaSugerido" value="{{ monto|int }}">
+                                                    <td>{{ foo[0] }}</td>
+                                                    <td>{{ foo[2] }} {{ foo[7] }}</td>
+                                                    <td><span class="badge badge-warning">Venta</span></td>
+                                                    <td>{{ fechaMovimiento }}</td>
+                                                    <td>{{ fechaEstimada }}</td>
+                                                    <td style="text-align: right">
+                                                        <span id="sugerenciaMostrarVenta_{{ loop.index0 }}" class="sugerenciaMostrar{{ monto|int }}"></span>
+                                                        {{ "{:,.0f}".format(monto).replace(',','.') }}</td>
+                                                    <td></td>
+                                                    <td style="text-align: center">
+                                                        {% if(foo[6]=='no conciliada') %}
+                                                        <button class="btn btn-sm btn-dim btn-info" onclick="movimientoCompraVenta('{{ foo[0] }}','{{ foo[2] }}','{{ foo[7] }}','{{ fechaMovimiento }}','{{ fechaEstimada }}','{{ monto|int }}')">Seleccionar</button>
+                                                    {% else %}<span class="badge badge-dot badge-success">Conciliado</span>
+                                                    {% endif %}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- content @e -->
+    <input type="hidden" id="descripcionConciliacion">
+    <input type="hidden" id="codigoMovimiento">
+    <input type="hidden" id="folio">
+    <input type="hidden" id="totalCompraVenta">
+    <input type="hidden" id="totalMovimientoBancario">
+    <input type="hidden" id="contadorFila">
+    <input type="hidden" name="urlCambiarEmpresa" id="urlCambiarEmpresa" value="banco">
+    <input type="hidden" name="rutApoderado" id="rutApoderado">
+    <input type="hidden" name="cuentaBancaria" id="cuentaBancaria">
+    <!-- content @e -->
+    <script>
+        var banco = 'estado';
+        {#$('.fechaVista').datepicker({
+           viewMode: 'years',
+           format: 'mm-yyyy',
+           startView: "months",
+           minViewMode: "months"
+       });
+       var startDate = new Date('2021-01-01'); // Now
+       var endDate = new Date(fechaMesAnterior);
+
+       $('.fechaVista').datepicker('setEndDate', endDate);//1st set  end date
+       $('.fechaVista').datepicker('setStartDate', startDate);//
+       $('.fechaVista').val(mesAnterior + '-' + anioActual);
+
+       function fecha() {
+           var fecha = $("#fechaVista").val().split('-')
+           var ultimoDia = new Date(fecha[1], fecha[0], 0);
+           $("#inicio").val('01' + fecha[0] + fecha[1]);
+           $("#fin").val(ultimoDia.getDate() + fecha[0] + fecha[1]);
+           $("#mes").val(numeroNombreMes(fecha[0]));
+           $("#anio").val(fecha[1]);
+       }#}
+
+        filtrarporPeriodo();
+        function filtrarporPeriodo() {
+            var html = '';
+            if ($("#mesAnio").val() == 'sindatos') {
+                var totalConciliadas=0;
+                html += `<table class="datatable-init-export nowrap table" id="tablaBci">
+                                        <thead>
+                                            <tr>
+                                                <th>Descripción</th>
+                                                <th>Fecha</th>
+                                                <th>Cargo</th>
+                                                <th>Abono</th>
+                                                <th style="text-align: center">Conciliar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>{% for mb in movimiento_cb %}
+                {% set fechaE = (mb[10] | string).split('-') %}
+                {% set fechaEditada = fechaE[2]~'-'~fechaE[1]~'-'~fechaE[0] %}
+                <tr>
+                    <td>{{mb[1]}}</td>
+                    <td>{{fechaEditada}}</td>
+                    <td style="text-align: right">{{"{:,.0f}".format(mb[7]).replace(',','.')}}</td>
+                    <td style="text-align: right">{{"{:,.0f}".format(mb[8]).replace(',','.')}}</td>
+                    <td style="text-align: center">
+                    {% if(mb[12]=='no conciliada') %}
+                    <button class="btn btn-sm btn-primary" onclick="conciliar('{{ mb[0] }}','{{mb[1]}}','{{ fechaEditada }}','{{ (mb[7]|int) }}','{{ mb[8]|int }}','no conciliada')"><em class="icon ni ni-tranx"></em> Conciliar</button></td>
+                    {% else %}`;
+                        totalConciliadas= totalConciliadas + 1;
+                        html += `<input type="hidden" class="MontoConciliadas" value="{{ (mb[7]|int)+(mb[8]|int) }}">
+
+                       {% for v in conciliacionesBancariasCompras %}
+                            {% if(mb[0]==v[8]) %}
+                                {% set fechaMovEm = (v[5] | string).split('-') %}
+                                {% set fechaEmision = fechaMovEm[2]~'-'~fechaMovEm[1]~'-'~fechaMovEm[0] %}
+                                {% set fechaMovEs = (v[6] | string).split('-') %}
+                                {% set fechaEstimada = fechaMovEs[2]~'-'~fechaMovEs[1]~'-'~fechaMovEs[0] %}
+                                <a href="javascript:conciliar('{{ mb[0] }}','{{mb[1]}}','{{ fechaEditada }}','{{ (mb[7]|int) }}','{{ mb[8]|int }}','conciliada','{{ v[3] }}','{{ v[9] }}','{{ fechaEmision }}','{{ fechaEstimada }}','{{ v[7]|int }}')"><span class="badge badge-dot badge-success">Conciliada</span></a>
+                            {% endif %}
+                        {% endfor %}
+                        {% for v in conciliacionesBancariasVentas %}
+                            {% if(mb[0]==v[8]) %}
+                                {% set fechaMovEm = ([5] | string).split('-') %}
+                                {% set fechaEmision = fechaMovEm[2]~'-'~fechaMovEm[1]~'-'~fechaMovEm[0] %}
+                                {% set fechaMovEs = ([6] | string).split('-') %}
+                                {% set fechaEstimada = fechaMovEs[2]~'-'~fechaMovEs[1]~'-'~fechaMovEs[0] %}
+                                <a href="javascript:conciliar('{{ mb[0] }}','{{mb[1]}}','{{ fechaEditada }}','{{ (mb[7]|int) }}','{{ mb[8]|int }}','conciliada','{{ v[4] }}','{{ v[9] }}','{{ fechaEmision }}','{{ fechaEstimada }}','{{ v[7]|int }}')"><span class="badge badge-dot badge-success">Conciliada</span></a>
+                            {% endif %}
+                        {% endfor %}
+
+                    {% endif %}
+                    <input type="hidden" class="cargo" value="{{mb[7]}}">
+                    <input type="hidden" class="abono" value="{{mb[8]}}">
+                </tr>
+            {% endfor %} </tbody>
+                                    </table>`;
+                $(".tablaaa").html(html);
+                $("#cantidadConciliada").html(totalConciliadas);
+                var montoConciliadas=0;
+                 $(".MontoConciliadas").each(function (i) {
+                     montoConciliadas+= parseInt($(".MontoConciliadas")[i].value || 0)
+                })
+
+                $("#montoConciliado").html(separadorMiles(montoConciliadas)+' CLP');
+                 $("#nombreMesConciliadas").html(' Historico');
+
+                var totalcargo = 0;
+                $(".cargo").each(function (i) {
+                    $(".cargo")[0].value
+                    totalcargo += parseInt($(".cargo")[i].value || 0)
+                });
+                $("#montoCargo").html(separadorMiles(totalcargo)+ ' CLP');
+                $("#nombreMesCargo").html(' Historico');
+
+                var totalabono = 0;
+                $(".abono").each(function (i) {
+                    $(".abono")[0].value
+                    totalabono += parseInt($(".abono")[i].value || 0)
+                });
+                $("#montoAbono").html(separadorMiles(totalabono)+ ' CLP');
+                $("#nombreMesAbono").html(' Historico');
+            } else {
+                html = '';
+                var dmesAnio = $("#mesAnio").val().split('-');
+                $("#nombreMes").html(dmesAnio[0]);
+                $("#nombreMes2").html(dmesAnio[0]);
+                $("#nombreMes3").html(dmesAnio[0]);
+                var fecha2 = $("#mesAnio").val().split('-');
+                var fecha3 = nombreANumero(fecha2[0]) + '-' + fecha2[1];
+                var totalConciliadas = 0;
+                html += `<table class="datatable-init-export nowrap table" id="tablaBci">
+                                        <thead>
+                                            <tr>
+                                                <th>Descripción</th>
+                                                <th>Fecha</th>
+                                                <th>Cargo</th>
+                                                <th>Abono</th>
+                                                <th style="text-align: center">Conciliar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                    {% for mb in movimiento_cb %}
+                        {% set fechaE = (mb[10] | string).split('-') %}
+                        {% set fechaEditada = fechaE[2]~'-'~fechaE[1]~'-'~fechaE[0] %}`;
+                    var fecha4 = '{{ fechaE[1]~'-'~fechaE[0] }}';
+                    if (fecha3 == fecha4) {
+                        html += `<tr>
+                            <td>{{mb[1]}}</td>
+                            <td>{{fechaEditada}}</td>
+                            <td style="text-align: right">{{"{:,.0f}".format(mb[7]).replace(',','.')}}</td>
+                            <td style="text-align: right">{{"{:,.0f}".format(mb[8]).replace(',','.')}}</td>
+                            <td style="text-align: center">
+                            {% if(mb[12]=='no conciliada') %}
+                                <button class="btn btn-sm btn-primary" onclick="conciliar('{{ mb[0] }}','{{mb[1]}}','{{ fechaEditada }}','{{ (mb[7]|int) }}','{{ (mb[8]|int)}}')"><em class="icon ni ni-tranx"></em> Conciliar</button>
+                            {% else %}`;
+                                totalConciliadas= totalConciliadas + 1;
+                                html += `<input type="hidden" class="MontoConciliadas" value="{{ (mb[7]|int)+(mb[8]|int) }}">
+
+                                {% for v in conciliacionesBancariasCompras %}
+                                    {% if(mb[0]==v[8]) %}
+                                        {% set fechaMovEm = (v[5] | string).split('-') %}
+                                        {% set fechaEmision = fechaMovEm[2]~'-'~fechaMovEm[1]~'-'~fechaMovEm[0] %}
+                                        {% set fechaMovEs = (v[6] | string).split('-') %}
+                                        {% set fechaEstimada = fechaMovEs[2]~'-'~fechaMovEs[1]~'-'~fechaMovEs[0] %}
+                                        <a href="javascript:conciliar('{{ mb[0] }}','{{mb[1]}}','{{ fechaEditada }}','{{ (mb[7]|int) }}','{{ mb[8]|int }}','conciliada','{{ v[3] }}','{{ v[9] }}','{{ fechaEmision }}','{{ fechaEstimada }}','{{ v[7]|int }}')"><span class="badge badge-dot badge-success">Conciliada</span></a>
+                                    {% endif %}
+                                {% endfor %}
+                                {% for v in conciliacionesBancariasVentas %}
+                                    {% if(mb[0]==v[8]) %}
+                                        {% set fechaMovEm = (v[5] | string).split('-') %}
+                                        {% set fechaEmision = fechaMovEm[2]~'-'~fechaMovEm[1]~'-'~fechaMovEm[0] %}
+                                        {% set fechaMovEs = (v[6] | string).split('-') %}
+                                        {% set fechaEstimada = fechaMovEs[2]~'-'~fechaMovEs[1]~'-'~fechaMovEs[0] %}
+                                        <a href="javascript:conciliar('{{ mb[0] }}','{{mb[1]}}','{{ fechaEditada }}','{{ (mb[7]|int) }}','{{ mb[8]|int }}','conciliada','{{ v[4] }}','{{ v[9] }}','{{ fechaEmision }}','{{ fechaEstimada }}','{{ v[7]|int }}')"><span class="badge badge-dot badge-success">Conciliada</span></a>
+                                    {% endif %}
+                                {% endfor %}
+
+                            {% endif %}
+                            </td>
+                            <input type="hidden" class="cargo2" value="{{mb[7]}}">
+                            <input type="hidden" class="abono2" value="{{mb[8]}}">
+                        </tr>`;
+                    }
+                    `{% endfor %} </tbody>
+                                    </table>`;
+                $(".tablaaa").html(html);
+                $("#cantidadConciliada").html(totalConciliadas);
+                var montoConciliadas=0;
+                 $(".MontoConciliadas").each(function (i) {
+                     montoConciliadas+= parseInt($(".MontoConciliadas")[i].value || 0)
+                })
+                $("#montoConciliado").html(separadorMiles(montoConciliadas)+' CLP');
+                 $("#nombreMesConciliadas").html(dmesAnio[0]);
+
+                var totalcargoFiltro = 0;
+                $(".cargo2").each(function (i) {
+                    totalcargoFiltro += parseInt($(".cargo2")[i].value || 0)
+                });
+                $("#montoCargo").html(separadorMiles(totalcargoFiltro)+ ' CLP');
+                $("#nombreMesCargo").html(dmesAnio[0]);
+
+                var totalabonoFiltro = 0;
+                $(".abono2").each(function (i) {
+                    totalabonoFiltro += parseInt($(".abono2")[i].value || 0)
+                });
+                $("#montoAbono").html(separadorMiles(totalabonoFiltro)+ ' CLP');
+                $("#nombreMesAbono").html(dmesAnio[0]);
+            }
+        }
+
+        {#function filtrarporPeriodo() {
+            $('.fechaVista').val(mesAnterior + '-' + anioActual);
+            if ($("#mesAnio").val() == 'sindatos') {
+                $('#tabla').show();
+                $('#tabla2').hide();
+                $("#nombreMes").html('Historico ');
+                $("#nombreMes2").html('Historico ');
+                $("#totalCargo").hide();
+                $("#totalAbono").hide();
+                $("#totalCargoHistorico").show();
+                $("#totalAbonoHistorico").show();
+
+                $("#nombreMes3").html('Historico ');
+                $("#totalConciliadas").hide();
+                $("#totalConciliadasHistorico").show();
+                var montoConciliadas=0;
+                var numeroConciliadas = $("#numeroConciliadas").length;
+                 $(".MontoConciliadas").each(function (i) {
+                     montoConciliadas+= parseInt($(".MontoConciliadas")[i].value || 0)
+                })
+                $("#totalConciliadasHistorico").html(' '+numeroConciliadas+' Monto '+montoConciliadas);
+
+                var totalcargo = 0;
+                $(".cargo").each(function (i) {
+                    totalcargo += parseInt($(".cargo")[i].value || 0)
+                });
+                var totalabono = 0;
+                $(".abono").each(function (i) {
+                    $(".abono")[0].value
+                    totalabono += parseInt($(".abono")[i].value || 0)
+                });
+                $("#totalCargoHistorico")[0].innerHTML = separadorMiles(totalcargo) + ' CLP';
+                $("#totalAbonoHistorico")[0].innerHTML = separadorMiles(totalabono) + ' CLP';
+            } else {
+                $('#tabla').hide();
+                $('#tabla2').show();
+                $("#totalCargoHistorico").hide();
+                $("#totalAbonoHistorico").hide();
+                $("#totalCargo").show();
+                $("#totalAbono").show();
+                var dmesAnio = $("#mesAnio").val().split('-');
+                var html = '';
+                $("#nombreMes").html(dmesAnio[0]);
+                $("#nombreMes2").html(dmesAnio[0]);
+                $.ajax({
+                    type: "post",
+                    url: '/bancos/abonoCargo/' + dmesAnio[0] + '/' + dmesAnio[1],
+                    success: function (respuesta) {
+                        var datos = JSON.parse(respuesta);
+                        for (var i = 0; i < datos.length; i++) {
+                            html += `<tr>
+                            <td>` + Math.round(datos[i][2]) + `</td>
+                            <td>` + datos[i][0] + `</td>
+                            <td>` + nombreANumero(dmesAnio[0]) + ` - ` + dmesAnio[1] + `</td>
+                            <td>` + separadorMiles(datos[i][3]) + `</td>
+                            <td>` + separadorMiles(datos[i][4]) + `</td>
+                            <td style="text-align: center">`;
+                                if(datos[i][7]=='no conciliada'){
+                                    html +=`<button class="btn btn-sm btn-primary" onclick="conciliar('` + Math.round(datos[i][2]) + `','` + datos[i][0] + `','` + nombreANumero(dmesAnio[0]) + `-` + dmesAnio[1] + `','`+datos[i][3]+`','`+datos[i][4]+`')">
+                                        <em class="icon ni ni-tranx"></em> Conciliar
+                                    </button>`;
+                                }else{
+                                    html +=`<input type="hidden" id="numeroConciliadas" value="conciliadas">
+                                    <input type="hidden" id="MontoConciliadas" value="`+parseInt(datos[i][3])+parseInt(datos[i][4])+`">
+                                    <span class="badge badge-dot badge-success">Conciliada</span>`;
+                                }
+                            html +=`</td>
+                            <input type="hidden" class="cargo2" value="` + datos[i][3] + `">
+                            <input type="hidden" class="abono2" value="` + datos[i][4] + `">
+                        </tr>`;
+                        }
+                        $("#cuerpoTabla").html(html);
+                        var numeroConciliadas = $("#numeroConciliadas2").length;
+                        var montoConciliadas=0;
+                        $(".MontoConciliadas").each(function (i) {
+                             montoConciliadas+= parseInt($(".MontoConciliadas")[i].value || 0)
+                        })
+                        $("#totalConciliadas").html(' '+numeroConciliadas+' Monto '+montoConciliadas);
+                        $("#nombreMes3").html(dmesAnio[0]);
+                        $("#totalConciliadas").show();
+                        $("#totalConciliadasHistorico").hide();
+
+                        var totalcargoFiltro = 0;
+                        $(".cargo2").each(function (i) {
+                            totalcargoFiltro += parseInt($(".cargo2")[i].value || 0)
+                        });
+                        $("#totalCargo")[0].innerHTML = separadorMiles(totalcargoFiltro) + ' CLP'
+
+                        var totalabonoFiltro = 0;
+                        $(".abono2").each(function (i) {
+                            totalabonoFiltro += parseInt($(".abono2")[i].value || 0)
+                        });
+                        $("#totalAbono")[0].innerHTML = separadorMiles(totalabonoFiltro) + ' CLP'
+                    },
+                    error: function () {
+                        alert('Disculpe, existió un problema');
+                    }
+                })
+            }
+        }#}
+    </script>
+    <script src="/static/assets/js/conciliarBanco.js"></script>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <script>
+                var mensaje = '{{ messages[0] }}';
+                console.log(mensaje);
+                switch (mensaje) {
+                    case 'actualizado':
+                        Swal.fire("Correcto", "Se actualizó la cartola correctament", "success");
+                        break;
+                }
+            </script>
+        {% endif %}
+    {% endwith %}
+{% endblock %}

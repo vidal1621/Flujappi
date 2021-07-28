@@ -1,0 +1,350 @@
+{% extends 'layout/templateSimple.html' %}
+{% block content %}
+<!-- Cuerpo -->
+<div class="nk-content ">
+    <div class="container-fluid">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                    <div class="nk-block-between">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">Bienvenido a Flujappi</h3>
+                            <div class="nk-block-des text-soft">
+                                <p>Trabaja con tu empresa en linea con el SII y entidades financieras</p>
+                            </div>
+                        </div><!-- .nk-block-head-content -->
+                        <!--<div class="nk-block-head-content">
+                            <div class="toggle-wrap nk-block-tools-toggle">
+                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
+                                <div class="toggle-expand-content" data-content="pageMenu">
+                                    <ul class="nk-block-tools g-3">
+                                        <li><form method="post"><button type="submit" class="btn btn-outline-success" id="actualizar"><em class="icon ni ni-update"></em><span>Actualizar</span></button></form></li>
+                                    </ul>
+                                </div>
+                            </div>&lt;!&ndash; .toggle-wrap &ndash;&gt;
+                        </div>&lt;!&ndash; .nk-block-head-content &ndash;&gt;-->
+                    </div><!-- .nk-block-between -->
+                </div><!-- .nk-block-head -->
+                <div class="nk-block">
+                    <div class="card card-bordered card-stretch">
+                        <div class="card-inner-group">
+                            <div class="card card-preview">
+                                <div class="card-inner">
+                                {% if(contribuyentes) %}
+                                    <div class="row">
+                                        <div class="col-xl-4 col-lg-4 col-12">
+                                            <div class="input-group mb-3">
+                                                 <div class="input-group-append">
+                                                        <button onclick="abrirActualizar()" class="btn btn-warning" data-toggle="tooltip" data-placement="right" title="Actualizar Empresa"><em class="icon ni ni-edit"></em></button>
+                                                 </div>
+                                                  <select class="form-control" name="rut_contribuyente" id="rut_contribuyente">
+                                                        {% for c in contribuyentes %}
+                                                            <option value="{{c[0]}}" data-nombre="{{ c[1] }}" data-clave="{{ c[5] }}" data-idUsuario="{{ c[6] }}" data-email="{{ c[7] }}">{{c[1]}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                  <div class="input-group-append">
+                                                        <button onclick="enviarRut()" class="btn btn-success"><em class="icon ni ni-external"></em> Buscar</button>
+                                                  </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-8 col-lg-8 col-12" style="text-align: right">
+                                            <div class="input-group mb-3">
+                                                  <div class="input-group-append">
+                                                        <button onclick="abrirModal()" class="btn btn-primary" data-toggle="tooltip" data-placement="left" title="Agregar Nueva Empresa"><em class="icon ni ni-plus-circle-fill"></em></button>
+                                                  </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr><br>
+                                    {% if(dnis[0]==None) %}
+                                        <div class="row">
+                                            <div class="col-xl-3 col-lg-3 col-12"></div>
+                                             <div class="col-xl-6 col-lg-6 col-12">
+                                                <div class="example-alert">
+                                                    <div class="alert alert-info alert-icon">
+                                                        <em class="icon ni ni-alert-circle"></em> Información:  <strong>No cuenta con un banco asociado</strong>.<span id="clickAqui"></span> para conectar con tu entidad financiera
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-3 col-lg-3 col-12"></div>
+                                        </div>
+                                    {% else %}
+                                        <div class="row">
+                                            <div class="col-xl-12 col-lg-12 col-12" style="text-align: right">
+                                                <button type="submit"
+                                                        class="btn btn-outline-success" onclick="solicitudActualizarBanco()"
+                                                        id="btn_actualizar" name="btn_actualizar"><em
+                                                        class="icon ni ni-update"></em><span>Actualizar</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            {% for foo in dnis %}
+                                                {% if(dnis|length)<= 3 %}
+                                                    {% set col = 'col-xl-4 col-lg-4 col-12' %}
+                                                {% else %}
+                                                    {% set col = 'col-xl-3 col-lg-3 col-12' %}
+                                                {% endif %}
+                                                <div class="{{ col }}">
+                                                    <div class="card card-bordered card-full">
+                                                        <div class="card-inner">
+                                                            <div class="card-title-group align-start mb-0">
+                                                                <div class="card-title">
+                                                                    <h6 class=""><span class="change up text-danger">Total Saldo {{ foo[7]|capitalize }}</span></h6>
+                                                                </div>
+                                                                <div class="card-tools">
+                                                                    <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip" data-placement="left" title="Total Ingresos"></em>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-amount">
+                                                                <span class="amount"> {{ "{:,.0f}".format(foo[5]).replace(',','.') }} <span class="currency currency-usd">CLP Banco {{ foo[6]|capitalize }}</span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-xl-6 col-lg-6 col-12"></div>
+                                                                <div class="col-xl-6 col-lg-6 col-12" style="text-align: right">
+                                                                    {% if(foo[6]|capitalize=='Bci') %}
+                                                                        <img class="round" src="/static/images/bancos/bciNormal.png" style="width:100px;">
+                                                                    {% elif(foo[6]|capitalize=='Estado') %}
+                                                                        <img class="round" src="/static/images/bancos/bancoEstado.png" style="width:100px;">
+                                                                    {% elif(foo[6]|capitalize=='Santander') %}
+                                                                        <img class="round" src="/static/images/bancos/santander.png" style="width:100px;">
+                                                                    {% elif(foo[6]|capitalize=='Chile') %}
+                                                                        <img class="round" src="/static/images/bancos/bancoChile.png" style="width:100px;">
+                                                                    {% else %}
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div><!-- .card -->
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="col-xl-4 col-lg-4 col-12">
+                                        <div class="input-group mb-3">
+                                              <div class="input-group-append">
+                                                    <button onclick="abrirModal()" class="btn btn-success"><em class="icon ni ni-more"></em> Crear Empresa</button>
+                                              </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                </div>
+
+                            </div>
+                        </div><!-- .card-inner-group -->
+                    </div><!-- .card -->
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade zoom" tabindex="-1" id="modalNueva">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Crear Nueva Empresa</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Rut</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="rutCon" name="rutCon" onkeypress="return isNumber(event)" oninput="checkRut(this,2,2)" />
+                        <input type="hidden" name="estadorut_2" id="estadorut_2" value="0">
+                        <div id="alerta">
+                            <div id="mensaje2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nombre</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="nombreEmpresa" name="nombreEmpresa" style="text-transform:uppercase" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Clavee SII</label>
+                    <div class="form-control-wrap">
+                        <input type="password" class="form-control" id="claveSII" name="claveSII" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <div class="form-control-wrap">
+                        <input type="email" class="form-control" id="emailEmpresa" name="emailEmpresa" required />
+                        <input type="hidden" value="{{ datosUsx[0] }}" id="idUsuario" name="idUsuario"/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="form-group">
+                        <button type="button" id="btn_guardar" onclick="crearEmpresa()" class="btn btn-lg btn-primary">Guardar</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade zoom" tabindex="-1" id="modalActualizar">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Actualizar Empresa</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Nombre</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="nombreEmpresaActualizar" style="text-transform:uppercase" name="nombreEmpresaActualizar" required />
+                        <input type="hidden" class="form-control" id="rutConActualizar" name="rutConActualizar" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Clavee SII</label>
+                    <div class="form-control-wrap">
+                        <input type="password" class="form-control" id="claveSIIActualizar" name="claveSIIActualizar" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="emailEmpresaActualizar" name="emailEmpresaActualizar" required />
+                        <input type="hidden" value="{{ datosUsx[0] }}" id="idUsuarioActualizar" name="idUsuarioActualizar"/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="form-group">
+                        <button type="button" id="btn_actualizar" onclick="actualizarEmpresa()" class="btn btn-lg btn-primary">Guardar</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- content @e -->
+<script src="/static/assets/js/validarRut.js" type="text/javascript"></script>
+<script>
+    {% if(dnis[0]==None) %}
+        var rut = $("#rut_contribuyente").val();
+        var crearCta = '<a href="/cuenta/cuentasCorrientes/'+rut+'" class="alert-link"> HAZ CLICK AQUÍ</a>';
+        $("#clickAqui").html(crearCta);
+    {% endif %}
+    function enviarRut(){
+        var rut = $("#rut_contribuyente").val();
+        window.location.href = '/empresa/dashboardEmpresa/'+rut;
+        {% if(dnis[0]==None) %}
+            var crearCta = '<a href="/cuenta/cuentasCorrientes/'+rut+'" class="alert-link"> HAZ CLICK AQUÍ</a>';
+            $("#clickAqui").html(crearCta);
+        {% endif %}
+    }
+
+    function solicitudActualizarBanco() {
+        $.ajax({
+            type: "post",
+            url: '/empresa/solicitudes/procesando',
+            success: function (respuesta) {
+                console.log(respuesta)
+                Swal.fire("Alerta", "Se envió la solicitud para actualizar sus datos, esto puede tardar unos minutos", "info");
+                $("#btn_actualizar").hide();
+                setTimeout('document.location.reload()', 3000);
+            },
+            error: function () {
+                Swal.fire("Error", "Disculpe, existió un problema", "error");
+            }
+        })
+    }
+
+    function abrirModal(){
+       $('#modalNueva').modal('show');
+    }
+
+    function abrirActualizar(){
+       $('#modalActualizar').modal('show');
+       var rut = $('#rut_contribuyente').val();
+       $("#rutConActualizar").val(rut);
+       var nombre = $('select#rut_contribuyente').find(':selected').data('nombre');
+       $("#nombreEmpresaActualizar").val(nombre);
+       var clave = $('select#rut_contribuyente').find(':selected').data('clave');
+       $("#claveSIIActualizar").val(clave);
+       var idusuario = $('select#rut_contribuyente').find(':selected').data('idusuario');
+       $("#idUsuarioActualizar").val(idusuario);
+       var email = $('select#rut_contribuyente').find(':selected').data('email');
+       $("#emailEmpresaActualizar").val(email);
+    }
+
+    function crearEmpresa(){
+        if($("#nombreEmpresa").val()==''){
+            Swal.fire("Alerta", "Debe ingresar un nombre de la empresa", "warning");
+        }else if($("#rutCon").val()==''){
+            Swal.fire("Alerta", "Debe ingresar el rut de la empresa", "warning");
+        }else if($("#claveSII").val()==''){
+            Swal.fire("Alerta", "Debe ingresar la clave del SII", "warning");
+        }else if($("#emailEmpresa").val()==''){
+            Swal.fire("Alerta", "Debe ingresar un correo electronico", "warning");
+        }else {
+            var data = {
+                "rut_contribuyente": $("#rutCon").val(),
+                "nombre_contribuyente": $("#nombreEmpresa").val(),
+                "clave_tributaria": $("#claveSII").val(),
+                "cod_usuario":$("#idUsuario").val(),
+                "correo_contribuyente": $("#emailEmpresa").val()
+            }
+            $.ajax({
+                type: "post",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                url: '/empresa/seleccionarEmpresa',
+                success: function (respuesta) {
+                    Swal.fire("Correcto", "La empresa se ha creado correctamente", "success");
+                    $("#btn_guardar").hide();
+                    setTimeout('document.location.reload()', 3000);
+                },
+                error: function () {
+                    alert('Disculpe, existió un problema');
+                }
+            })
+        }
+    }
+
+    function actualizarEmpresa(){
+        if($("#nombreEmpresaActualizar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar un nombre de la empresa", "warning");
+        }else if($("#claveSIIActualizar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar la clave del SII", "warning");
+        }else if($("#emailEmpresaActualizar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar un correo electronico", "warning");
+        }else {
+            var data = {
+                "rut_contribuyente": $("#rutConActualizar").val(),
+                "nombre_contribuyente": $("#nombreEmpresaActualizar").val(),
+                "clave_tributaria": $("#claveSIIActualizar").val(),
+                "cod_usuario":$("#idUsuarioActualizar").val(),
+                "correo_contribuyente": $("#emailEmpresaActualizar").val()
+            }
+            $.ajax({
+                type: "update",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                url: '/empresa/seleccionarEmpresa',
+                success: function (respuesta) {
+                    Swal.fire("Correcto", "La empresa se ha actualizado correctamente", "success");
+                    $("#btn_actualizar").hide();
+                    setTimeout('document.location.reload()', 3000);
+                },
+                error: function () {
+                    alert('Disculpe, existió un problema');
+                }
+            })
+        }
+    }
+</script>
+{% endblock %}

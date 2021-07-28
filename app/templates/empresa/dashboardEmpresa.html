@@ -1,0 +1,927 @@
+{% extends 'layout/templateBasico.html' %}
+{% block content %}
+<!-- Cuerpo -->
+<div class="nk-content ">
+    <div class="container-fluid">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                    <div class="nk-block-between">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">RESUMEN DE {{contribuyentes[0][1]}}</h3>
+                            <div class="nk-block-des text-soft">
+                                <p>Esta es la información mas relevante de su empresa</p>
+                            </div>
+                        </div><!-- .nk-block-head-content -->
+                        <div class="nk-block-head-content">
+                            <div class="toggle-wrap nk-block-tools-toggle">
+                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-more-v"></em></a>
+                                <div class="toggle-expand-content" data-content="pageMenu">
+                                    <ul class="nk-block-tools g-3">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div><!-- .nk-block-head-content -->
+                    </div><!-- .nk-block-between -->
+                </div><!-- .nk-block-head -->
+                <div class="nk-block">
+                    <div class="row g-gs">
+                        <div class="col-xl-3 col-lg-3 col-12">
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner">
+                                    <div class="card-title-group align-start mb-0">
+                                        <div class="card-title">
+                                            <h6 class="subtitle">Total Ingresos Ventas</h6>
+                                        </div>
+                                        <div class="card-tools">
+                                            <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip" data-placement="left" title="Total Ingresos"></em>
+                                        </div>
+                                    </div>
+                                    <div class="card-amount">
+                                        <span class="amount">{% if (totalVentas[0]!=None) %} {{"{:,.0f}".format(totalVentas[0]).replace(',','.')}} {%else%} 0 {% endif %}<span class="currency currency-usd">CLP</span>
+                                        </span>
+                                        <span class="change up text-danger"><em class="icon ni ni-plus"></em>IVA INCLUIDO</span>
+                                    </div>
+                                    <div class="invest-data">
+                                        <div class="invest-data-amount g-2">
+                                            <div class="invest-data-history">
+                                                <div class="title">Cantidad Facturas</div>
+                                                <div class="amount">{{ cantidadTotalAnual[0] }} <span class="currency currency-usd"></span></div>
+                                            </div>
+                                            <!--<div class="invest-data-history">
+                                                <div class="title">Esta Semana</div>
+                                                <div class="amount">1,259.28 <span class="currency currency-usd">CLP</span></div>
+                                            </div>-->
+                                        </div>
+                                        <div class="invest-data-ck">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .card -->
+                        </div><!-- .col -->
+                        <div class="col-xl-3 col-lg-3 col-12">
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner">
+                                    <div class="card-title-group align-start mb-0">
+                                        <div class="card-title">
+                                            <h6 class="subtitle">Total Egresos Compras</h6>
+                                        </div>
+                                        <div class="card-tools">
+                                            <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip" data-placement="left" title="Total Egresos"></em>
+                                        </div>
+                                    </div>
+                                    <div class="card-amount">
+                                        <span class="amount">{% if (totalCompras[0]!=None) %} {{"{:,.0f}".format(totalCompras[0]).replace(',','.')}} {%else%} 0 {% endif %} <span class="currency currency-usd">CLP</span>
+                                        </span>
+                                       <span class="change up text-danger"><em class="icon ni ni-plus"></em>IVA INCLUIDO</span>
+                                    </div>
+                                    <div class="invest-data">
+                                        <div class="invest-data-amount g-2">
+                                            <div class="invest-data-history">
+                                                <div class="title">Cantidad Facturas</div>
+                                                <div class="amount">{{ cantidadTotalAnualCompras[0] }} <span class="currency currency-usd"></span></div>
+                                            </div>
+                                        </div>
+                                        <div class="invest-data-ck">
+                                            <canvas class="iv-data-chart" id="totalWithdraw"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .card -->
+                        </div><!-- .col -->
+                        <div class="col-xl-3 col-lg-3 col-12">
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner">
+                                    <div class="card-title-group align-start mb-0">
+                                        <div class="card-title">
+                                            <h6 class="subtitle">Total Clientes y Proveedores Únicos</h6>
+                                        </div>
+                                        <div class="card-tools">
+                                            <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip" data-placement="left" title="Clientes Únicos"></em>
+                                        </div>
+                                    </div>
+                                    <div class="analytic-data-group analytic-au-group g-2">
+                                            <div class="analytic-data analytic-au-data">
+                                                <div class="amount">{%if(clientesUnicosComprasAnuales)%} {{clientesUnicosComprasAnuales[0]}} {%else%} 0 {%endif%} <span class="change down text-danger"><em class="icon ni ni-arrow-down-rigth"></em> Compras</span></div>
+                                            </div>
+                                            <div class="analytic-data analytic-au-data">
+                                                <div class="amount">{%if(clientesUnicosVentasAnuales)%} {{clientesUnicosVentasAnuales[0]}} {%else%} 0 {%endif%} <span class="change up"><em class="icon ni ni-arrow-up-left"></em> Ventas</span></div>
+                                            </div>
+                                        </div>
+                                    <div class="invest-data">
+                                        <div class="invest-data-amount g-2">
+                                            <div class="invest-data-history">
+                                                <div class="title">Este Mes Compras</div>
+                                                <div class="amount">{%if(clientesUnicosComprasMensuales)%} {{clientesUnicosComprasMensuales[0]}} {%else%} 0 {%endif%} <span class="currency currency-usd">PROVEEDORES ÚNICOS</span></div>
+                                            </div>
+                                            <div class="invest-data-history">
+                                                <div class="title">Este Mes Ventas</div>
+                                                <div class="amount">{%if(clientesUnicosVentasAnuales)%} {{clientesUnicosVentasMensuales[0]}} {%else%} 0 {%endif%} <span class="currency currency-usd">CLIENTES ÚNICOS</span></div>
+                                            </div>
+                                        </div>
+                                        <div class="invest-data-ck">
+                                            <canvas class="iv-data-chart" id="totalWithdraw"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .card -->
+                        </div><!-- .col -->
+
+                        <div class="col-xl-3 col-lg-3 col-12">
+                            <div class="card card-bordered  card-full">
+                                <div class="card-inner">
+                                    <div class="card-title-group align-start mb-0">
+                                        <div class="card-title">
+                                            <h6 class="subtitle">Saldo Banco <span id="nombreBanco"></span></h6>
+                                        </div>
+                                        <div class="card-tools">
+                                            <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip" data-placement="left" title="Saldo Banco"></em>
+                                        </div>
+                                    </div>
+                                    <div class="card-amount">
+                                        <span class="amount">{%if(saldoCuenta==None)%} 0 {% else %}{%if(saldoCuenta[0])%} {{"{:,.0f}".format(saldoCuenta[0]).replace(',','.')}} {%else%} 0 {%endif%} {%endif%}<span class="currency currency-usd">CLP</span>
+                                        </span>
+                                    </div>
+                                    <div class="invest-data">
+                                        <div class="invest-data-amount g-2">
+                                           <div class="invest-data-history">
+                                                <div class="title">Abono</div>
+                                                <div class="amount">{%if(abonoCargo=='na')%} 0 {% else %}{% if(abonoCargo[0]==None) %}0{% else %}{{ "{:,.0f}".format(abonoCargo[0]).replace(',','.') }}{% endif %} {% endif %}<span class="currency currency-usd">CLP</span></div>
+                                            </div>
+                                            <div class="invest-data-history">
+                                                <div class="title">Cargo</div>
+                                                <div class="amount">{%if(abonoCargo=='na')%} 0 {% else %}{% if(abonoCargo[1]==None) %}0{% else %}{{ "{:,.0f}".format(abonoCargo[1]).replace(',','.') }}{% endif %} {% endif %}<span class="currency currency-usd">CLP</span></div>
+                                            </div>
+                                        </div>
+                                        <div class="invest-data-ck">
+                                            <canvas class="iv-data-chart" id="totalBalance"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .card -->
+                        </div><!-- .col -->
+                        <div class="col-lg-6 col-xxl-6">
+                            <div class="card card-bordered h-100">
+                                <div class="card-inner">
+                                    <div class="card-title-group pb-3 g-2">
+                                        <div class="card-title card-title-sm">
+                                            <h6 class="title">Compras y Ventas</h6>
+                                            <p>De acuerdo a la información extraída del SII.</p>
+                                        </div>
+                                    </div>
+                                    <div class="analytic-ov">
+                                        <div class="analytic-data-group analytic-ov-group g-3">
+                                        </div>
+                                        <div class="analytic-ov-ck">
+                                            <canvas class="bar-chart" id="barChartMultiple"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .card -->
+                        </div><!-- .col -->
+                        <div class="col-lg-6 col-xxl-6">
+                            <div class="card card-bordered h-100">
+                                <div class="card-inner">
+                                    <div class="card-title-group pb-3 g-2">
+                                        <div class="card-title card-title-sm">
+                                            <h6 class="title">Flujo de Caja</h6>
+                                            <p>De acuerdo a la información extraída del Banco.</p>
+                                        </div>
+                                    </div>
+                                    <div class="analytic-ov">
+                                        <div class="analytic-data-group analytic-ov-group g-3">
+                                        </div>
+                                        <div class="analytic-ov-ck" style="text-align: center">
+                                            {% if(cargoMensual=='na') %}
+                                                <a href="/cuenta/cuentasCorrientes/{{ contribuyentes[0][0] }}" class="btn btn-warning"><em class="icon ni ni-sign-usdc"></em> Conectar Entidad Financiera</a>
+                                            {% else %}
+                                                <canvas class="bar-chart" id="barChartStacked"></canvas>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .card -->
+                        </div><!-- .col -->
+                        <div class="col-md-12 col-lg-6 col-xxl-6">
+                            <div class="card card-bordered h-100">
+                                <div class="card-inner">
+                                    <div class="card-title-group align-start pb-3 g-2">
+                                        <div class="card-title card-title-sm">
+                                            <h6 class="title">Gastos</h6>
+                                            <p>Indicador de los gastos asociados a una cuenta contable</p>
+                                        </div>
+                                        <div class="card-tools">
+                                            <em class="card-hint icon ni ni-help" data-toggle="tooltip" data-placement="left" title="Gastos"></em>
+                                        </div>
+                                    </div>
+                                    <div class="analytic-au">
+                                        <div class="analytic-au-ck">
+                                             <canvas class="analytics-doughnut" id="TrafficChannelDoughnutData"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .card -->
+                        </div>
+                        <div class="col-lg-12 col-xxl-6">
+                            <div class="card card-bordered">
+                                <div class="card-inner">
+                                    <div class="card-title-group align-start mb-2">
+                                        <div class="card-title">
+                                            <h6 class="title">Indicadores Económicos</h6>
+                                        </div>
+                                        <div class="card-tools">
+                                            <form method="post"><button class="btn btn-sm btn-success" type="submit" data-toggle="tooltip" data-placement="left" title="" data-original-title="Actualizar Indicadores"><em class="icon ni ni-update"></em> Actualizar</button></form>
+                                        </div>
+                                    </div>
+                                    <div class="align-end gy-12 gx-5 flex-wrap flex-md-nowrap flex-lg-wrap flex-xxl-nowrap">
+                                        <div class="nk-sale-data-group flex-md-nowrap g-4">
+                                            {% for foo in indicadores %}
+                                                <div class="nk-sale-data">
+                                                    <span class="amount">{{ (foo[4]) }}</span>
+                                                        <span class="sub-title"><span class="change down text-success">{{ foo[1] }}</span></span>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- .col -->
+                        <!--<div class="col-md-6 col-lg-5 col-xxl-3">
+                            <div class="card card-bordered h-100">
+                                <div class="card-inner">
+                                    <div class="card-title-group align-start pb-3 g-2">
+                                        <div class="card-title card-title-sm">
+                                            <h6 class="title">Resultado Operacional</h6>
+                                            <p>How has performend this month.</p>
+                                        </div>
+                                        <div class="card-tools">
+                                            <em class="card-hint icon ni ni-help" data-toggle="tooltip" data-placement="left" title="Performance of this month"></em>
+                                        </div>
+                                    </div>
+                                    <div class="analytic-wp">
+                                        <div class="analytic-wp-group g-3">
+                                            <div class="analytic-data analytic-wp-data">
+                                                <div class="analytic-wp-graph">
+                                                    <div class="title">Bounce Rate <span>(avg)</span></div>
+                                                    <div class="analytic-wp-ck">
+                                                        <canvas class="analytics-line-small" id="BounceRateData"></canvas>
+                                                    </div>
+                                                </div>
+                                                <div class="analytic-wp-text">
+                                                    <div class="amount amount-sm">23.59%</div>
+                                                    <div class="change up"><em class="icon ni ni-arrow-long-up"></em>4.5%</div>
+                                                    <div class="subtitle">vs. last month</div>
+                                                </div>
+                                            </div>
+                                            <div class="analytic-data analytic-wp-data">
+                                                <div class="analytic-wp-graph">
+                                                    <div class="title">Pageviews <span>(avg)</span></div>
+                                                    <div class="analytic-wp-ck">
+                                                        <canvas class="analytics-line-small" id="PageviewsData"></canvas>
+                                                    </div>
+                                                </div>
+                                                <div class="analytic-wp-text">
+                                                    <div class="amount amount-sm">5.48</div>
+                                                    <div class="change down"><em class="icon ni ni-arrow-long-down"></em>-1.48%</div>
+                                                    <div class="subtitle">vs. last month</div>
+                                                </div>
+                                            </div>
+                                            <div class="analytic-data analytic-wp-data">
+                                                <div class="analytic-wp-graph">
+                                                    <div class="title">New Users <span>(avg)</span></div>
+                                                    <div class="analytic-wp-ck">
+                                                        <canvas class="analytics-line-small" id="NewUsersData"></canvas>
+                                                    </div>
+                                                </div>
+                                                <div class="analytic-wp-text">
+                                                    <div class="amount amount-sm">549</div>
+                                                    <div class="change up"><em class="icon ni ni-arrow-long-up"></em>6.8%</div>
+                                                    <div class="subtitle">vs. last month</div>
+                                                </div>
+                                            </div>
+                                            <div class="analytic-data analytic-wp-data">
+                                                <div class="analytic-wp-graph">
+                                                    <div class="title">Time on Site <span>(avg)</span></div>
+                                                    <div class="analytic-wp-ck">
+                                                        <canvas class="analytics-line-small" id="TimeOnSiteData"></canvas>
+                                                    </div>
+                                                </div>
+                                                <div class="analytic-wp-text">
+                                                    <div class="amount amount-sm">3m 35s</div>
+                                                    <div class="change up"><em class="icon ni ni-arrow-long-up"></em>1.4%</div>
+                                                    <div class="subtitle">vs. last month</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>&lt;!&ndash; .card &ndash;&gt;
+                        </div>&lt;!&ndash; .col &ndash;&gt;
+                        <div class="col-lg-7 col-xxl-6">
+                            <div class="card card-bordered h-100">
+                                <div class="card-inner mb-n2">
+                                    <div class="card-title-group">
+                                        <div class="card-title card-title-sm">
+                                            <h6 class="title">Facturas por cobrar por cliente</h6>
+                                            <p>Top traffic channels metrics.</p>
+                                        </div>
+                                        <div class="card-tools">
+                                            <div class="drodown">
+                                                <a href="#" class="dropdown-toggle dropdown-indicator btn btn-sm btn-outline-light btn-white" data-toggle="dropdown">30 Days</a>
+                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-xs">
+                                                    <ul class="link-list-opt no-bdr">
+                                                        <li><a href="#"><span>7 Days</span></a></li>
+                                                        <li><a href="#"><span>15 Days</span></a></li>
+                                                        <li><a href="#"><span>30 Days</span></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="nk-tb-list is-loose traffic-channel-table">
+                                    <div class="nk-tb-item nk-tb-head">
+                                        <div class="nk-tb-col nk-tb-channel"><span>Channel</span></div>
+                                        <div class="nk-tb-col nk-tb-sessions"><span>Sessions</span></div>
+                                        <div class="nk-tb-col nk-tb-prev-sessions"><span>Prev Sessions</span></div>
+                                        <div class="nk-tb-col nk-tb-change"><span>Change</span></div>
+                                        <div class="nk-tb-col nk-tb-trend tb-col-sm text-right"><span>Trend</span></div>
+                                    </div>&lt;!&ndash; .nk-tb-head &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col nk-tb-channel">
+                                            <span class="tb-lead">Organic Search</span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-sessions">
+                                            <span class="tb-sub tb-amount"><span>4,305</span></span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-prev-sessions">
+                                            <span class="tb-sub tb-amount"><span>4,129</span></span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-change">
+                                            <span class="tb-sub"><span>4.29%</span> <span class="change up"><em class="icon ni ni-arrow-long-up"></em></span></span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-trend text-right">
+                                            <div class="traffic-channel-ck ml-auto">
+                                                <canvas class="analytics-line-small" id="OrganicSearchData"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col nk-tb-channel">
+                                            <span class="tb-lead">Social Media</span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-sessions">
+                                            <span class="tb-sub tb-amount"><span>859</span></span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-prev-sessions">
+                                            <span class="tb-sub tb-amount"><span>936</span></span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-change">
+                                            <span class="tb-sub"><span>15.8%</span> <span class="change down"><em class="icon ni ni-arrow-long-down"></em></span></span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-trend text-right">
+                                            <div class="traffic-channel-ck ml-auto">
+                                                <canvas class="analytics-line-small" id="SocialMediaData"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col nk-tb-channel">
+                                            <span class="tb-lead">Referrals</span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-sessions">
+                                            <span class="tb-sub tb-amount"><span>482</span></span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-prev-sessions">
+                                            <span class="tb-sub tb-amount"><span>793</span></span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-change">
+                                            <span class="tb-sub"><span>41.3%</span> <span class="change down"><em class="icon ni ni-arrow-long-down"></em></span></span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-trend text-right">
+                                            <div class="traffic-channel-ck ml-auto">
+                                                <canvas class="analytics-line-small" id="ReferralsData"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col nk-tb-channel">
+                                            <span class="tb-lead">Others</span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-sessions">
+                                            <span class="tb-sub tb-amount"><span>138</span></span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-prev-sessions">
+                                            <span class="tb-sub tb-amount"><span>97</span></span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-change">
+                                            <span class="tb-sub"><span>12.6%</span> <span class="change up"><em class="icon ni ni-arrow-long-up"></em></span></span>
+                                        </div>
+                                        <div class="nk-tb-col nk-tb-trend text-right">
+                                            <div class="traffic-channel-ck ml-auto">
+                                                <canvas class="analytics-line-small" id="OthersData"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                </div>&lt;!&ndash; .nk-tb-list &ndash;&gt;
+                            </div>&lt;!&ndash; .card &ndash;&gt;
+                        </div>&lt;!&ndash; .col &ndash;&gt;
+                        <div class="col-md-6 col-xxl-3">
+                            <div class="card card-bordered h-100">
+                                <div class="card-inner">
+                                    <div class="card-title-group">
+                                        <div class="card-title card-title-sm">
+                                            <h6 class="title">Facturas por cobrar por mes de emisión</h6>
+                                        </div>
+                                        <div class="card-tools">
+                                            <div class="drodown">
+                                                <a href="#" class="dropdown-toggle dropdown-indicator btn btn-sm btn-outline-light btn-white" data-toggle="dropdown">30 Days</a>
+                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-xs">
+                                                    <ul class="link-list-opt no-bdr">
+                                                        <li><a href="#"><span>7 Days</span></a></li>
+                                                        <li><a href="#"><span>15 Days</span></a></li>
+                                                        <li><a href="#"><span>30 Days</span></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="traffic-channel">
+                                        <div class="traffic-channel-doughnut-ck">
+                                            &lt;!&ndash;<canvas class="analytics-doughnut" id="TrafficChannelDoughnutData"></canvas>&ndash;&gt;
+                                        </div>
+                                        <div class="traffic-channel-group g-2">
+                                            <div class="traffic-channel-data">
+                                                <div class="title"><span class="dot dot-lg sq" data-bg="#9cabff"></span><span>Organic Search</span></div>
+                                                <div class="amount">4,305 <small>58.63%</small></div>
+                                            </div>
+                                            <div class="traffic-channel-data">
+                                                <div class="title"><span class="dot dot-lg sq" data-bg="#b8acff"></span><span>Social Media</span></div>
+                                                <div class="amount">859 <small>23.94%</small></div>
+                                            </div>
+                                            <div class="traffic-channel-data">
+                                                <div class="title"><span class="dot dot-lg sq" data-bg="#ffa9ce"></span><span>Referrals</span></div>
+                                                <div class="amount">482 <small>12.94%</small></div>
+                                            </div>
+                                            <div class="traffic-channel-data">
+                                                <div class="title"><span class="dot dot-lg sq" data-bg="#f9db7b"></span><span>Others</span></div>
+                                                <div class="amount">138 <small>4.49%</small></div>
+                                            </div>
+                                        </div>&lt;!&ndash; .traffic-channel-group &ndash;&gt;
+                                    </div>&lt;!&ndash; .traffic-channel &ndash;&gt;
+                                </div>
+                            </div>&lt;!&ndash; .card &ndash;&gt;
+                        </div>&lt;!&ndash; .col &ndash;&gt;
+                        <div class="col-md-6 col-xxl-3">
+                            <div class="card card-bordered h-100">
+                                <div class="card-inner">
+                                    <div class="card-title-group">
+                                        <div class="card-title card-title-sm">
+                                            <h6 class="title">Egresos</h6>
+                                        </div>
+                                        <div class="card-tools">
+                                            <div class="drodown">
+                                                <a href="#" class="dropdown-toggle dropdown-indicator btn btn-sm btn-outline-light btn-white" data-toggle="dropdown">30 Days</a>
+                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-xs">
+                                                    <ul class="link-list-opt no-bdr">
+                                                        <li><a href="#"><span>7 Days</span></a></li>
+                                                        <li><a href="#"><span>15 Days</span></a></li>
+                                                        <li><a href="#"><span>30 Days</span></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="analytics-map">
+                                        <div class="vector-map" id="worldMap"></div>
+                                        <table class="analytics-map-data-list">
+                                            <tr class="analytics-map-data">
+                                                <td class="country">United States</td>
+                                                <td class="amount">12,094</td>
+                                                <td class="percent">23.54%</td>
+                                            </tr>
+                                            <tr class="analytics-map-data">
+                                                <td class="country">India</td>
+                                                <td class="amount">7,984</td>
+                                                <td class="percent">7.16%</td>
+                                            </tr>
+                                            <tr class="analytics-map-data">
+                                                <td class="country">Turkey</td>
+                                                <td class="amount">6,338</td>
+                                                <td class="percent">6.54%</td>
+                                            </tr>
+                                            <tr class="analytics-map-data">
+                                                <td class="country">Bangladesh</td>
+                                                <td class="amount">4,749</td>
+                                                <td class="percent">5.29%</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>&lt;!&ndash; .card &ndash;&gt;
+                        </div>&lt;!&ndash; .col &ndash;&gt;
+                        <div class="col-xxl-6">
+                            <div class="card card-bordered h-100">
+                                <div class="card-inner mb-n2">
+                                    <div class="card-title-group">
+                                        <div class="card-title card-title-sm">
+                                            <h6 class="title">Browser Used By Users</h6>
+                                        </div>
+                                        <div class="card-tools">
+                                            <div class="drodown">
+                                                <a href="#" class="dropdown-toggle dropdown-indicator btn btn-sm btn-outline-light btn-white" data-toggle="dropdown">30 Days</a>
+                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-xs">
+                                                    <ul class="link-list-opt no-bdr">
+                                                        <li><a href="#"><span>7 Days</span></a></li>
+                                                        <li><a href="#"><span>15 Days</span></a></li>
+                                                        <li><a href="#"><span>30 Days</span></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="nk-tb-list is-loose">
+                                    <div class="nk-tb-item nk-tb-head">
+                                        <div class="nk-tb-col"><span>Browser</span></div>
+                                        <div class="nk-tb-col text-right"><span>Users</span></div>
+                                        <div class="nk-tb-col"><span>% Users</span></div>
+                                        <div class="nk-tb-col tb-col-sm text-right"><span>Bounce Rate</span></div>
+                                    </div>&lt;!&ndash; .nk-tb-head &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col">
+                                            <div class="icon-text">
+                                                <em class="text-primary icon ni ni-globe"></em>
+                                                <span class="tb-lead">Google Chrome</span>
+                                            </div>
+                                        </div>
+                                        <div class="nk-tb-col text-right">
+                                            <span class="tb-sub tb-amount"><span>1,641</span></span>
+                                        </div>
+                                        <div class="nk-tb-col">
+                                            <div class="progress progress-md progress-alt bg-transparent">
+                                                <div class="progress-bar" data-progress="72.84"></div>
+                                                <div class="progress-amount">72.84%</div>
+                                            </div>
+                                        </div>
+                                        <div class="nk-tb-col tb-col-sm text-right">
+                                            <span class="tb-sub">22.62%</span>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col">
+                                            <div class="icon-text">
+                                                <em class="text-danger icon ni ni-globe"></em>
+                                                <span class="tb-lead">Mozilla Firefox</span>
+                                            </div>
+                                        </div>
+                                        <div class="nk-tb-col text-right">
+                                            <span class="tb-sub tb-amount"><span>497</span></span>
+                                        </div>
+                                        <div class="nk-tb-col">
+                                            <div class="progress progress-md progress-alt bg-transparent">
+                                                <div class="progress-bar" data-progress="7.93"></div>
+                                                <div class="progress-amount">7.93%</div>
+                                            </div>
+                                        </div>
+                                        <div class="nk-tb-col tb-col-sm text-right">
+                                            <span class="tb-sub">20.49%</span>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col">
+                                            <div class="icon-text">
+                                                <em class="text-info icon ni ni-globe"></em>
+                                                <span class="tb-lead">Safari Browser</span>
+                                            </div>
+                                        </div>
+                                        <div class="nk-tb-col text-right">
+                                            <span class="tb-sub tb-amount"><span>187</span></span>
+                                        </div>
+                                        <div class="nk-tb-col">
+                                            <div class="progress progress-md progress-alt bg-transparent">
+                                                <div class="progress-bar" data-progress="4.87"></div>
+                                                <div class="progress-amount">4.87%</div>
+                                            </div>
+                                        </div>
+                                        <div class="nk-tb-col tb-col-sm text-right">
+                                            <span class="tb-sub">21.34%</span>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col">
+                                            <div class="icon-text">
+                                                <em class="text-orange icon ni ni-globe"></em>
+                                                <span class="tb-lead">UC Browser</span>
+                                            </div>
+                                        </div>
+                                        <div class="nk-tb-col text-right">
+                                            <span class="tb-sub tb-amount"><span>96</span></span>
+                                        </div>
+                                        <div class="nk-tb-col">
+                                            <div class="progress progress-md progress-alt bg-transparent">
+                                                <div class="progress-bar" data-progress="2.46"></div>
+                                                <div class="progress-amount">2.46%</div>
+                                            </div>
+                                        </div>
+                                        <div class="nk-tb-col tb-col-sm text-right">
+                                            <span class="tb-sub">20.33%</span>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col">
+                                            <div class="icon-text">
+                                                <em class="text-blue icon ni ni-globe"></em>
+                                                <span class="tb-lead">Edge / IE</span>
+                                            </div>
+                                        </div>
+                                        <div class="nk-tb-col text-right">
+                                            <span class="tb-sub tb-amount"><span>28</span></span>
+                                        </div>
+                                        <div class="nk-tb-col">
+                                            <div class="progress progress-md progress-alt bg-transparent">
+                                                <div class="progress-bar" data-progress="1.14"></div>
+                                                <div class="progress-amount">1.14%</div>
+                                            </div>
+                                        </div>
+                                        <div class="nk-tb-col tb-col-sm text-right">
+                                            <span class="tb-sub">21.34%</span>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col">
+                                            <div class="icon-text">
+                                                <em class="text-purple icon ni ni-globe"></em>
+                                                <span class="tb-lead">Other Browser</span>
+                                            </div>
+                                        </div>
+                                        <div class="nk-tb-col text-right">
+                                            <span class="tb-sub tb-amount"><span>683</span></span>
+                                        </div>
+                                        <div class="nk-tb-col">
+                                            <div class="progress progress-md progress-alt bg-transparent">
+                                                <div class="progress-bar" data-progress="10.76"></div>
+                                                <div class="progress-amount">10.76%</div>
+                                            </div>
+                                        </div>
+                                        <div class="nk-tb-col tb-col-sm text-right">
+                                            <span class="tb-sub">20.49%</span>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                </div>&lt;!&ndash; .nk-tb-list &ndash;&gt;
+                            </div>&lt;!&ndash; .card &ndash;&gt;
+                        </div>&lt;!&ndash; .col &ndash;&gt;
+                        <div class="col-md-6 col-xxl-3">
+                            <div class="card card-bordered h-100">
+                                <div class="card-inner mb-n2">
+                                    <div class="card-title-group">
+                                        <div class="card-title card-title-sm">
+                                            <h6 class="title">Pages View by Users</h6>
+                                        </div>
+                                        <div class="card-tools">
+                                            <div class="drodown">
+                                                <a href="#" class="dropdown-toggle dropdown-indicator btn btn-sm btn-outline-light btn-white" data-toggle="dropdown">30 Days</a>
+                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-xs">
+                                                    <ul class="link-list-opt no-bdr">
+                                                        <li><a href="#"><span>7 Days</span></a></li>
+                                                        <li><a href="#"><span>15 Days</span></a></li>
+                                                        <li><a href="#"><span>30 Days</span></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="nk-tb-list is-compact">
+                                    <div class="nk-tb-item nk-tb-head">
+                                        <div class="nk-tb-col"><span>Page</span></div>
+                                        <div class="nk-tb-col text-right"><span>Page Views</span></div>
+                                    </div>&lt;!&ndash; .nk-tb-head &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col">
+                                            <span class="tb-sub"><span>/</span></span>
+                                        </div>
+                                        <div class="nk-tb-col text-right">
+                                            <span class="tb-sub tb-amount"><span>2,879</span></span>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col">
+                                            <span class="tb-sub"><span>/subscription/index.html</span></span>
+                                        </div>
+                                        <div class="nk-tb-col text-right">
+                                            <span class="tb-sub tb-amount"><span>2,094</span></span>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col">
+                                            <span class="tb-sub"><span>/general/index.html</span></span>
+                                        </div>
+                                        <div class="nk-tb-col text-right">
+                                            <span class="tb-sub tb-amount"><span>1,634</span></span>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col">
+                                            <span class="tb-sub"><span>/crypto/index.html</span></span>
+                                        </div>
+                                        <div class="nk-tb-col text-right">
+                                            <span class="tb-sub tb-amount"><span>1,497</span></span>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col">
+                                            <span class="tb-sub"><span>/invest/index.html</span></span>
+                                        </div>
+                                        <div class="nk-tb-col text-right">
+                                            <span class="tb-sub tb-amount"><span>1,349</span></span>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col">
+                                            <span class="tb-sub"><span>/subscription/profile.html</span></span>
+                                        </div>
+                                        <div class="nk-tb-col text-right">
+                                            <span class="tb-sub tb-amount"><span>984</span></span>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col">
+                                            <span class="tb-sub"><span>/general/index-crypto.html</span></span>
+                                        </div>
+                                        <div class="nk-tb-col text-right">
+                                            <span class="tb-sub tb-amount"><span>879</span></span>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col">
+                                            <span class="tb-sub"><span>/apps/messages/index.html</span></span>
+                                        </div>
+                                        <div class="nk-tb-col text-right">
+                                            <span class="tb-sub tb-amount"><span>598</span></span>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                    <div class="nk-tb-item">
+                                        <div class="nk-tb-col">
+                                            <span class="tb-sub"><span>/general/index-crypto.html</span></span>
+                                        </div>
+                                        <div class="nk-tb-col text-right">
+                                            <span class="tb-sub tb-amount"><span>436</span></span>
+                                        </div>
+                                    </div>&lt;!&ndash; .nk-tb-item &ndash;&gt;
+                                </div>&lt;!&ndash; .nk-tb-list &ndash;&gt;
+                            </div>&lt;!&ndash; .card &ndash;&gt;
+                        </div>&lt;!&ndash; .col &ndash;&gt;
+                        <div class="col-md-6 col-xxl-3">
+                            <div class="card card-bordered h-100">
+                                <div class="card-inner h-100 stretch flex-column">
+                                    <div class="card-title-group">
+                                        <div class="card-title card-title-sm">
+                                            <h6 class="title">Sessions by Device</h6>
+                                        </div>
+                                        <div class="card-tools">
+                                            <div class="drodown">
+                                                <a href="#" class="dropdown-toggle dropdown-indicator btn btn-sm btn-outline-light btn-white" data-toggle="dropdown">30 Days</a>
+                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-xs">
+                                                    <ul class="link-list-opt no-bdr">
+                                                        <li><a href="#"><span>7 Days</span></a></li>
+                                                        <li><a href="#"><span>15 Days</span></a></li>
+                                                        <li><a href="#"><span>30 Days</span></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="device-status my-auto">
+                                        <div class="device-status-ck">
+                                            <canvas class="analytics-doughnut" id="deviceStatusData"></canvas>
+                                        </div>
+                                        <div class="device-status-group">
+                                            <div class="device-status-data">
+                                                <em data-color="#798bff" class="icon ni ni-monitor"></em>
+                                                <div class="title">Desktop</div>
+                                                <div class="amount">84.5%</div>
+                                                <div class="change up text-danger"><em class="icon ni ni-arrow-long-up"></em>4.5%</div>
+                                            </div>
+                                            <div class="device-status-data">
+                                                <em data-color="#baaeff" class="icon ni ni-mobile"></em>
+                                                <div class="title">Mobile</div>
+                                                <div class="amount">14.2%</div>
+                                                <div class="change up text-danger"><em class="icon ni ni-arrow-long-up"></em>133.2%</div>
+                                            </div>
+                                            <div class="device-status-data">
+                                                <em data-color="#7de1f8" class="icon ni ni-tablet"></em>
+                                                <div class="title">Tablet</div>
+                                                <div class="amount">1.3%</div>
+                                                <div class="change up text-danger"><em class="icon ni ni-arrow-long-up"></em>25.3%</div>
+                                            </div>
+                                        </div>&lt;!&ndash; .device-status-group &ndash;&gt;
+                                    </div>&lt;!&ndash; .device-status &ndash;&gt;
+                                </div>
+                            </div>&lt;!&ndash; .card &ndash;&gt;
+                        </div>&lt;!&ndash; .col &ndash;&gt;-->
+                    </div><!-- .row -->
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" name="urlCambiarEmpresa" id="urlCambiarEmpresa" value="empresa/dashboardEmpresa">
+<!-- Cuerpo -->
+
+<script>
+    "use strict";
+    /*FACTURAS SII*/
+    var mes=[];
+    var montoCompras=[];
+    var montoVentas=[];
+    var cantidad=[]
+    //dinero
+    {% for g in graficoCantidadesCompra %}
+        montoCompras.push({{g["cantidad"]}});
+        mes.push(numeroNombreMes({{g['mes']}}));
+    {% endfor %}
+    {% for g in graficoCantidades %}
+        montoVentas.push({{g["cantidad"]}});
+        mes.push(numeroNombreMes({{g['mes']}}));
+    {% endfor %}
+
+    var mes=[];
+    var cantidadCompras=[];
+    {% for g in graficoCountCompra %}
+        cantidadCompras.push({{g["cantidad"]}});
+        mes.push(numeroNombreMes({{g['mes']}}));
+    {% endfor %}
+
+    var barChartMultiple = {
+        labels: mes,
+        dataUnit: 'CLP',
+        datasets: [{
+          label: "Compras",
+          color: "#9cabff",
+          data: montoCompras,
+        }, {
+          label: "Ventas",
+          color: "#f4aaa4",
+          data: montoVentas
+        }]
+    };
+
+    //Grafico de cargos y abonos
+    var mesCargoAbono=[];
+    var montoCargo=[];
+    var montoAbono=[];
+    {% if(cargoMensual=='na') %}
+    {% else %}
+        {% for g in cargoMensual %}
+            montoCargo.push({{g[2]|int}});
+            mesCargoAbono.push(numeroNombreMes({{g[0]}}));
+        {% endfor %}
+        {% for g in abonoMensual %}
+            montoAbono.push({{g[2]}});
+        {% endfor %}
+    {% endif %}
+
+   var barChartStacked = {
+        labels: mesCargoAbono,
+        dataUnit: 'CLP',
+        datasets: [{
+          label: "Total Cargos",
+          color: "#5ce0aa",
+          data: montoCargo,
+        }, {
+          label: "Total Abonos",
+          color: "#798bff",
+          data: montoAbono
+        }]
+   };
+</script>
+<script src="/static/assets/js/graficos.js"></script>
+<script>
+    /*GRAFICO GASTOS*/
+    var totalGastos=[];
+    var nombreCuenta=[];
+    {% for g in gastos %}
+        totalGastos.push({{g[1]}});
+        nombreCuenta.push('{{g[0]}}');
+    {% endfor %}
+</script>
+<script src="/static/assets/js/graficoDashboard.js"></script>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <script>
+            var mensaje = '{{ messages[0] }}';
+            console.log(mensaje);
+            switch (mensaje) {
+                case 'actualizado':
+                    Swal.fire("Correcto", "Se actualizó la cartola correctamente", "success");
+                    break;
+                case 'error':
+                    Swal.fire("Error", "No se pudieron actualizar los datos", "error");
+                    break;
+            }
+        </script>
+    {% endif %}
+{% endwith %}
+{% endblock %}

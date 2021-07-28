@@ -1,0 +1,463 @@
+{% extends 'layout/templateBasico.html' %}
+{% block content %}
+<!-- Cuerpo -->
+<div class="nk-content ">
+    <div class="container-fluid">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                    <div class="nk-block-between">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">GASTOS - {{contribuyentes[0][1]}}</h3>
+                            <div class="nk-block-des text-soft">
+                                <!--<p>total de datos 1200.</p>-->
+                            </div>
+                        </div><!-- .nk-block-head-content -->
+                        <div class="nk-block-head-content">
+                            <div class="toggle-wrap nk-block-tools-toggle">
+                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
+                                <div class="toggle-expand-content" data-content="pageMenu" data-toggle="tooltip" data-placement="top" title="Desde SII">
+                                    <ul class="nk-block-tools g-3">
+                                        <li><a href="javascript:verModal('modalNueva','Agregar Gasto')" class="btn btn-outline-success"><em class="ni ni-property-add"></em><span>Agregar Nuevo</span></a></li>
+                                    </ul>
+                                </div>
+                            </div><!-- .toggle-wrap -->
+                        </div><!-- .nk-block-head-content -->
+                    </div><!-- .nk-block-between -->
+                </div><!-- .nk-block-head -->
+                <div class="nk-block">
+                    <div class="card card-bordered card-stretch">
+                        <div class="card-inner-group">
+                            <div class="card card-preview">
+                                <div class="card-inner">
+                                    <table class="datatable-init-export nowrap table">
+                                        <thead>
+                                            <tr>
+                                                <th>Número de Documento</th>
+                                                <th>Descripción</th>
+                                                <th>Fecha</th>
+                                                <th>Clasificación</th>
+                                                <th>Responsable</th>
+                                                <th>Monto</th>
+                                                <th></th>
+                                                <th>Conciliar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for v in gastos %}
+                                                {% set fecha = (v[6] | string).split('-') %}
+                                                {% set fechaEditada = fecha[2]~'-'~fecha[1]~'-'~fecha[0] %}
+                                                <tr>
+                                                    <td>{{v[8]}}</td>
+                                                    <td>{{v[10]}}</td>
+                                                    <td>{{fechaEditada}}</td>
+                                                    <td>
+                                                        {% for c in cuenta_gastos %}
+                                                            {% if(c[0]==v[14]) %}
+                                                                {{c[1]}}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        </td>
+                                                    <td>{{v[7]}}</td>
+                                                    <td style="text-align: right">{{"{:,.0f}".format(v[5])}}</td>
+                                                    <td style="text-align: center">
+                                                        <button type="button" class="btn btn-sm btn-success" onclick="javascript:actualizarFila('{{v[0]}}','{{v[8]}}','{{v[1]}}','{{v[4]}}','{{v[9]}}','{{v[6]}}','{{v[7]}}','{{v[5]}}','{{v[10]}}','{{v[11]}}','{{v[12]}}','{{v[13]}}','{{v[14]}}')">
+                                                            <em class="icon ni ni-edit-fill"></em> Actualizar
+                                                        </button>
+                                                    </td>
+                                                    <td><button class="btn btn-sm btn-primary"><em class="icon ni ni-tranx"></em> Conciliar</button></td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- .card-inner-group -->
+                    </div><!-- .card -->
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- content @e -->
+<div class="modal fade" tabindex="-1" id="modalNueva">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titulo"></h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Número de Documento</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control" id="n_documento" name="n_documento" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Tipo</label>
+                            <div class="form-control-wrap">
+                                <select class="form-control" id="desc_gastos" name="desc_gastos">
+                                    <option value="Boleta">Boleta</option>
+                                    <option value="Invoice">Invoice</option>
+                                    <option value="Recibo">Recibo</option>
+                                </select>
+                                <input type="hidden" id="rut_contribuyente" name="rut_contribuyente" value="{{contribuyentes[0][0]}}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Fecha</label>
+                            <div class="form-control-wrap">
+                               <div class="form-icon form-icon-right">
+                                    <em class="icon ni ni-calendar-alt"></em>
+                                </div>
+                                <input type="text" class="form-control date-picker" id="fecha" name="fecha" data-date-format="dd-mm-yyyy">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Responsable</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control" id="responsable" name="responsable"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-3 col-lg-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Proveedor</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control" id="nombre_contribuyente" name="nombre_contribuyente"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Monto</label>
+                            <div class="form-control-wrap">
+                                <input type="number" class="form-control" id="monto" name="monto"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Descripción</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control" id="descripcion" name="descripcion"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-12">
+                       <div class="form-group">
+                            <label class="form-label">Archivo</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control" id="archivo" name="archivo"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Período</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control date-picker-alt" id="periodo" name="periodo" data-date-format="yyyy-mm"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Unidad de Negocio</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control" id="negocio_asociado" name="negocio_asociado"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Cuenta</label>
+                            <div class="form-control-wrap">
+                                <select class="form-control" id="cod_cuenta_gastos" name="cod_cuenta_gastos">
+                                    {% for c in cuenta_gastos %}
+                                        <option value="{{c[0]}}">{{c[1]}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="form-group">
+                    <button type="button" id="btn_guardar" onclick="agregarCuenta()" class="btn btn-lg btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="modalActualizar">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <label class="form-label">Actualizar Plan Cuenta</label>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Número de Documento</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control" id="n_documento_editar" name="n_documento_editar" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Tipo</label>
+                            <div class="form-control-wrap">
+                                <select class="form-control" id="desc_gastos_editar" name="desc_gastos_editar">
+                                    <option value="Boleta">Boleta</option>
+                                    <option value="Invoice">Invoice</option>
+                                    <option value="Recibo">Recibo</option>
+                                </select>
+                                <input type="hidden" id="rut_contribuyente_editar" name="rut_contribuyente_editar"/>
+                                <input type="hidden" id="cod_gastos_editar" name="cod_gastos_editar"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Fecha</label>
+                            <div class="form-control-wrap">
+                                 <div class="form-icon form-icon-right">
+                                    <em class="icon ni ni-calendar-alt"></em>
+                                </div>
+                                <input type="text" class="form-control date-picker" id="fecha_editar" name="fecha_editar" data-date-format="yyyy-mm-dd"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Responsable</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control" id="responsable_editar" name="responsable_editar"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-3 col-lg-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Proveedor</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control" id="nombre_contribuyente_editar" name="nombre_contribuyente_editar"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Monto</label>
+                            <div class="form-control-wrap">
+                                <input type="number" class="form-control" id="monto_editar" name="monto_editar"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Descripción</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control" id="descripcion_editar" name="descripcion_editar"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Archivo</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control" id="archivo_editar" name="archivo_editar"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Período</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control date-picker-alt" id="periodo_editar" name="periodo_editar" data-date-format="yyyy-mm"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Unidad de Negocio</label>
+                            <div class="form-control-wrap">
+                                <input type="text" class="form-control" id="negocio_asociado_editar" name="negocio_asociado_editar"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-12">
+                        <div class="form-group">
+                            <label class="form-label">Cuenta</label>
+                            <div class="form-control-wrap">
+                                <select class="form-control" id="cod_cuenta_gastos_editar" name="cod_cuenta_gastos_editar">
+                                    {% for c in cuenta_gastos %}
+                                        <option value="{{c[0]}}">{{c[1]}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="form-group">
+                        <button type="button" id="btn_actualizar" class="btn btn-success" onclick="actualizarCuenta()">Actualizar</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" name="urlCambiarEmpresa" id="urlCambiarEmpresa" value="compra/gastos">
+<script>
+    function verModal(elemento,titulo,accion) {
+        $('#' + elemento + '').appendTo('body').modal('show');
+        $("#titulo").html(titulo);
+    }
+
+    function actualizarFila(cod_gastos_editar,n_documento_editar, desc_gastos_editar, rut_contribuyente_editar, nombre_contribuyente_editar, fecha_editar, responsable_editar, monto_editar, descripcion_editar, archivo_editar, periodo_editar, negocio_asociado_editar, cod_cuenta_gastos_editar){
+        $('#modalActualizar').modal('show');
+        $("#cod_gastos_editar").val(cod_gastos_editar);
+        $("#n_documento_editar").val(n_documento_editar);
+        $("#desc_gastos_editar").val(desc_gastos_editar);
+        $("#rut_contribuyente_editar").val(rut_contribuyente_editar);
+        $("#nombre_contribuyente_editar").val(nombre_contribuyente_editar);
+        $("#fecha_editar").val(fecha_editar);
+        $("#responsable_editar").val(responsable_editar);
+        $("#monto_editar").val(monto_editar);
+        $("#descripcion_editar").val(descripcion_editar);
+        $("#archivo_editar").val(archivo_editar);
+        $("#periodo_editar").val(periodo_editar);
+        $("#negocio_asociado_editar").val(negocio_asociado_editar);
+        $("#cod_cuenta_gastos_editar").val(cod_cuenta_gastos_editar);
+    }
+
+    function agregarCuenta(){
+        if($("#n_documento").val()==''){
+            Swal.fire("Alerta", "Debe ingresar número del documento", "warning");
+        }else if($("#desc_gastos").val()==''){
+            Swal.fire("Alerta", "Debe ingresar descripción del gasto", "warning");
+        }else if($("#fecha").val()==''){
+            Swal.fire("Alerta", "Debe ingresar fecha", "warning");
+        }else if($("#nombre_contribuyente").val()==''){
+            Swal.fire("Alerta", "Debe ingresar proveedor", "warning");
+        }else if($("#responsable").val()==''){
+            Swal.fire("Alerta", "Debe ingresar responsable", "warning");
+        }else if($("#monto").val()==''){
+            Swal.fire("Alerta", "Debe ingresar monto", "warning");
+        }else if($("#descripcion").val()==''){
+            Swal.fire("Alerta", "Debe ingresar tipo de documento", "warning");
+        }else if($("#periodo").val()==''){
+            Swal.fire("Alerta", "Debe ingresar período", "warning");
+        }else if($("#negocio_asociado").val()==''){
+            Swal.fire("Alerta", "Debe ingresar unidad de negocio", "warning");
+        }else {
+            var data = {
+                "n_documento": $("#n_documento").val(),
+                "desc_gastos": $("#desc_gastos").val(),
+                "rut_contribuyente": $("#rut_contribuyente").val(),
+                "nombre_contribuyente": $("#nombre_contribuyente").val(),
+                "fecha": $("#fecha").val(),
+                "responsable": $("#responsable").val(),
+                "monto": $("#monto").val(),
+                "descripcion": $("#descripcion").val(),
+                "archivo": $("#archivo").val(),
+                "periodo": $("#periodo").val(),
+                "negocio_asociado": $("#negocio_asociado").val(),
+                "cod_cuenta_gastos": $("#cod_cuenta_gastos").val()
+            }
+            $.ajax({
+                type: "post",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                url: '/compra/gastos/'+$("#empresaSeleccionada").val(),
+                success: function (respuesta) {
+                    Swal.fire("Correcto", "El gasto se guardo correctamente", "success");
+                    $("#btn_guardar").hide();
+                    setTimeout('document.location.reload()', 3000);
+                },
+                error: function () {
+                    alert('Disculpe, existió un problema');
+                }
+            })
+        }
+    }
+
+    function actualizarCuenta(){
+        if($("#n_documento_editar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar número del documento", "warning");
+        }else if($("#desc_gastos_editar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar descripción del gasto", "warning");
+        }else if($("#fecha_editar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar fecha", "warning");
+        }else if($("#nombre_contribuyente_editar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar proveedor", "warning");
+        }else if($("#responsable_editar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar responsable", "warning");
+        }else if($("#monto_editar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar monto", "warning");
+        }else if($("#descripcion_editar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar tipo de documento", "warning");
+        }else if($("#periodo_editar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar período", "warning");
+        }else if($("#negocio_asociado_editar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar unidad de negocio", "warning");
+        }else {
+            var data = {
+                "n_documento": $("#n_documento_editar").val(),
+                "desc_gastos": $("#desc_gastos_editar").val(),
+                "rut_contribuyente": $("#rut_contribuyente_editar").val(),
+                "nombre_contribuyente": $("#nombre_contribuyente_editar").val(),
+                "fecha": $("#fecha_editar").val(),
+                "responsable": $("#responsable_editar").val(),
+                "proveedor": $("#proveedor_editar").val(),
+                "monto": $("#monto_editar").val(),
+                "descripcion": $("#descripcion_editar").val(),
+                "archivo": $("#archivo_editar").val(),
+                "periodo": $("#periodo_editar").val(),
+                "negocio_asociado": $("#negocio_asociado_editar").val(),
+                "cod_cuenta_gastos": $("#cod_cuenta_gastos_editar").val(),
+                "cod_gastos": $("#cod_gastos_editar").val()
+            }
+            $.ajax({
+                type: "update",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                url: '/compra/gastos/'+$("#empresaSeleccionada").val(),
+                success: function (respuesta) {
+                    Swal.fire("Correcto", "Se actualizo la cuenta correctamente", "success");
+                    $("#btn_actualizar").hide();
+                    setTimeout('document.location.reload()', 3000);
+                },
+                error: function () {
+                    alert('Disculpe, existió un problema');
+                }
+            })
+        }
+    }
+</script>
+{% endblock %}

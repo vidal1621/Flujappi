@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zxx" class="js">
+
+<head>
+    <base href="../">
+    <meta charset="utf-8">
+    <meta name="author" content="Natalia">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Ejecucion de programa">
+    <!-- Fav Icon  -->
+    <link rel="shortcut icon" href="/static/assets/images/logo/flujappi.ico">
+    <!-- Page Title  -->
+    <title>{{titulo}}</title>
+    <!-- StyleSheets  -->
+    <link rel="stylesheet" href="/static/assets/css/dashlite.css?ver=2.4.0">
+    <link id="skin-default" rel="stylesheet" href="/static/assets/css/theme.css?ver=2.4.0">
+</head>
+
+<body class="nk-body bg-lighter npc-general has-sidebar no-touch nk-nio-theme dark-mode"> <!--nk-body bg-lighter npc-general has-sidebar -->
+    <div class="nk-app-root">
+        <!-- main @s -->
+        <div class="nk-main ">
+            <!-- MENU -->
+            {% include "layout/menu.html" %}
+            <!-- Menu -->
+            <!-- wrap @s -->
+            <div class="nk-wrap ">
+                <script src="/static/assets/js/bundle.js?ver=2.4.0"></script>
+                <script src="/static/assets/js/scripts.js?ver=2.4.0"></script>
+                <script src="/static/assets/js/funcionesGlobales.js"></script>
+                <!-- Menu encabezado -->
+                {% include "layout/encabezado.html" %}
+                <!-- Menu encabezado -->
+                <!-- Cuerpo -->
+                {% block content %}{% endblock %}
+                <!-- Cuerpo -->
+                <!-- Pie de Pagina -->
+                {% include "layout/footer.html" %}
+                <!-- Pie de Pagina -->
+            </div>
+            <!-- wrap @e -->
+        </div>
+        <!-- main @e -->
+    </div>
+    <!-- app-root @e -->
+    <!-- JavaScript -->
+    <!--<script src="/static/assets/js/charts/gd-analytics.js?ver=2.4.0"></script>
+    <script src="/static/assets/js/libs/jqvmap.js?ver=2.4.0"></script>-->
+</body>
+<script>
+    $( document ).ready(function() {
+        $.ajax({
+            url: '/bancos/bancosAsociados/'+$("#empresaSeleccionada").val(),
+            success: function (bancos_a) {
+                var html = '';
+                if(bancos_a!='') {
+                    for (var i in bancos_a) {
+                        if (bancos_a[i].estado_banco != 'activo') {
+                            html += `<li class="nk-menu-item">
+                                <a class="nk-menu-link"><span class="nk-menu-text">Estamos verificando su cuenta bancaria</span></a>
+                            </li>`;
+                        } else {
+                            if (bancos_a[i].nombre_banco == 'bci') {
+                                var banco = 'bancoBci';
+                                mesAnio = '/' + numeroNombreMes(mesActual) + '/{{anio_actual}}';
+                            } else if (bancos_a[i].nombre_banco == 'santander') {
+                                var banco = 'bancoSantander';
+                                mesAnio = '/' + numeroNombreMes(mesActual) + '/{{anio_actual}}';
+                            } else if (bancos_a[i].nombre_banco == 'estado') {
+                                var banco = 'bancoEstado';
+                                mesAnio = '/' + numeroNombreMes(mesActual) + '/{{anio_actual}}';
+                            } else if (bancos_a[i].nombre_banco == 'chile') {
+                                var banco = 'bancoChile';
+                                mesAnio = '/' + numeroNombreMes(mesActual) + '/{{anio_actual}}';
+                            }else {
+                                var banco = '';
+                            }
+                            html += `<li class="nk-menu-item">
+                            <a href="/bancos/` + banco + `/` + bancos_a[i].rut_apoderado + `/` + bancos_a[i].cuenta_bancaria + mesAnio + `" class="nk-menu-link"><span class="nk-menu-text">` + bancos_a[i].nombre_banco.charAt(0).toUpperCase() + bancos_a[i].nombre_banco.slice(1) + `</span></a>
+                        </li>`;
+                            $("#nombreBanco").html(bancos_a[i].nombre_banco)
+                            $("#rutApoderado").val(bancos_a[i].rut_apoderado);
+                            $("#cuentaBancaria").val(bancos_a[i].cuenta_bancaria);
+                            $("#codBanco").val(bancos_a[i].cod_banco);
+                        }
+                    }
+                }else{
+                    html += `<li class="nk-menu-item">
+                        <a href="/cuenta/cuentasCorrientes/{{ contribuyentes[0][0] }}" class="nk-menu-link"><span class="nk-menu-text">Conecte con Banco</span></a>
+                    </li>`;
+                }
+                $("#bancosAsociados").html(html)
+            },
+            error: function () {
+                alert('Disculpe, existió un problema');
+            }
+        })
+    });
+
+    var url = $("#urlCambiarEmpresa").val();
+    if(url=='banco'){
+        $("#listaEmpresas").hide();
+    }else{
+        $("#listaEmpresas").show();
+    }
+    function seleccionarOtraEmpresa(){
+        $("#listaEmpresas").show();
+        window.location.href = '/'+url+'/'+$("#empresaSeleccionada").val();
+    }
+</script>
+
+</html>

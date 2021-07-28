@@ -1,0 +1,608 @@
+{% extends 'layout/templateBasico.html' %}
+{% block content %}
+    <!-- Cuerpo -->
+    <div class="nk-content ">
+        <div class="container-fluid">
+            <div class="nk-content-inner">
+                <div class="nk-content-body">
+                    <div class="nk-block-head nk-block-head-sm">
+                        <div class="nk-block-between">
+                            <div class="nk-block-head-content">
+                                <h3 class="nk-block-title page-title">BANCO BCI - {{ contribuyentes[0][1] }}</h3>
+                                <div class="nk-block-des text-soft">
+                                    <p></p>
+                                </div>
+                            </div><!-- .nk-block-head-content -->
+                            <div class="nk-block-head-content">
+                                <div class="toggle-wrap nk-block-tools-toggle">
+                                    <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1"
+                                       data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
+                                    <div class="toggle-expand-content" data-content="pageMenu" data-toggle="tooltip"
+                                         data-placement="top" title="Desde Banco">
+                                        <ul class="nk-block-tools g-3">
+                                            <li>
+                                                {#<form method="post">#}
+                                                    <div class="row">
+                                                        <div>
+                                                            <div class="form-group">
+                                                                <label class="form-label">Seleccionar Fecha</label>
+                                                                <div class="form-control-wrap">
+                                                                    <div class='input-group date' id='datetimepicker10'>
+                                                                        <input type='text'
+                                                                               class="form-control fechaVista"
+                                                                               id="fechaVista" required
+                                                                               data-date-format="mm-yyyy"/>
+                                                                        <div class="input-group-append">
+                                                                        <span class="input-group-text">
+                                                                          <span class="icon ni ni-calendar"></span>
+                                                                        </span>
+                                                                        </div>
+                                                                        <input type="hidden" name="fin" id="fin" value="31052021">
+                                                                        <input type="hidden" name="inicio" id="inicio" value="31052021">
+                                                                        <input type="hidden" id="mes" name="mes">
+                                                                        <input type="hidden" id="anio" name="anio">
+                                                                        <button onclick="solicitudActualizarBanco()" type="button"
+                                                                                class="btn btn-outline-success"
+                                                                                id="btn_actualizar"><em
+                                                                                class="icon ni ni-update"></em><span>Actualizar</span>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {#</form>#}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div><!-- .toggle-wrap -->
+                            </div><!-- .nk-block-head-content -->
+                        </div><!-- .nk-block-between -->
+                    </div><!-- .nk-block-head -->
+                    <div class="nk-block">
+                        <div class="row g-gs">
+                            <div class="col-xl-3 col-lg-3 col-12">
+                                <div class="card card-bordered card-full">
+                                    <div class="card-inner">
+                                        <div class="card-title-group align-start mb-0">
+                                            <div class="card-title">
+                                                <h6 class="subtitle">Total Conciliaciones <span id="nombreMesConciliadas"></span></h6>
+                                            </div>
+                                            <div class="card-tools">
+                                                <em class="card-hint icon ni ni-money" style="color:#1ee0ac" data-toggle="tooltip" data-placement="left" title="Total Conciliaciones"></em>
+                                            </div>
+                                        </div>
+                                        <div class="card-amount">
+                                            <span class="amount" id="montoConciliado"></span>
+                                        </div>
+                                        <div class="invest-data">
+                                            <div class="invest-data-amount g-2">
+                                                <div class="invest-data-history">
+                                                    <div class="title">Movimientos Conciliados</div>
+                                                    <div class="amount" id="cantidadConciliada"> <span class="currency currency-usd"></span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!-- .card -->
+                            </div><!-- .col -->
+                            <div class="col-xl-3 col-lg-3 col-12">
+                                <div class="card card-bordered card-full">
+                                    <div class="card-inner">
+                                        <div class="card-title-group align-start mb-0">
+                                            <div class="card-title">
+                                                <h6 class="subtitle">Total Cargos <span id="nombreMesCargo"></span></h6>
+                                            </div>
+                                            <div class="card-tools">
+                                                <em class="card-hint icon ni ni-money" style="color:#1ee0ac" data-toggle="tooltip" data-placement="left" title="Total Cargos"></em>
+                                            </div>
+                                        </div>
+                                        <div class="card-amount">
+                                            <span class="amount" id="montoCargo"></span>
+                                        </div>
+                                    </div>
+                                </div><!-- .card -->
+                            </div><!-- .col -->
+                            <div class="col-xl-3 col-lg-3 col-12">
+                                <div class="card card-bordered card-full">
+                                    <div class="card-inner">
+                                        <div class="card-title-group align-start mb-0">
+                                            <div class="card-title">
+                                                <h6 class="subtitle">Total Abonos <span id="nombreMesAbono"></span></h6>
+                                            </div>
+                                            <div class="card-tools">
+                                                <em class="card-hint icon ni ni-money" style="color:#1ee0ac" data-toggle="tooltip" data-placement="left" title="Total Abonos"></em>
+                                            </div>
+                                        </div>
+                                        <div class="card-amount">
+                                            <span class="amount" id="montoAbono"></span>
+                                        </div>
+                                    </div>
+                                </div><!-- .card -->
+                            </div><!-- .col -->
+                            <div class="col-xl-3 col-lg-3 col-12">
+                                <div class="card card-bordered card-full">
+                                    <div class="card-inner">
+                                        <div class="card-title-group align-start mb-0">
+                                            <div class="card-title">
+                                                <h6 class="subtitle">Total Saldo Actual</h6>
+                                            </div>
+                                            <div class="card-tools">
+                                                <em class="card-hint icon ni ni-money" style="color:#1ee0ac" data-toggle="tooltip" data-placement="left" title="Total Saldo"></em>
+                                            </div>
+                                        </div>
+                                        <div class="card-amount">
+                                            <span class="amount">{% if(ctaBancariaBciEmpresa) %}
+                                            {{ "{:,.0f}".format(ctaBancariaBciEmpresa[6]).replace(',','.') }}{% else %}
+                                            0{% endif %} CLP</span>
+                                        </div>
+                                    </div>
+                                </div><!-- .card -->
+                            </div><!-- .col -->
+                        </div>
+                        <br>
+                        <div class="card card-bordered card-stretch">
+                            <div class="card-inner-group">
+                                <div class="card card-preview">
+                                    <div class="card-inner">
+                                        <div style="text-align: left">
+                                            <div class="col-xl-3 col-lg-3 col-12">
+                                                <label>Seleccionar Período</label>
+                                                <select class="form-control" name="mesAnio" id="mesAnio"
+                                                        onchange="filtrarporPeriodo()">
+                                                    <option value="sindatos">Seleccione una fecha</option>
+                                                    {% for foo in cartolaHistorica %}
+                                                        {% set separar = foo[1].split('-') %}
+                                                        <option value="{{ foo[1] }}">{{ separar[0] }}
+                                                            de {{ separar[1] }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="tablaaa"></div>
+                                    </div>
+                                </div>
+                            </div><!-- .card-inner-group -->
+                        </div><!-- .card -->
+                    </div><!-- .nk-block -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="modalConciliar">
+        <div class="modal-dialog modal-dialog-top modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Conciliar Movimiento Bancario</h4>
+                    <button onclick="limpiarDatos()" class="close" data-dismiss="modal" aria-label="Close">
+                        <em class="icon ni ni-cross"></em>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner">
+                                    <div class="card-title-group align-start mb-0">
+                                        <div class="card-title">
+                                            <h6 class="subtitle" id="descripcionMovimiento"
+                                                style="color:#f4bd0e"></h6>
+                                        </div>
+                                    </div>
+                                    <div class="card-amount">
+                                        <span class="amount" id="montoMovimiento"></span>
+                                    </div>
+                                    <div class="invest-data">
+                                        <div class="invest-data-amount g-2">
+                                            <div class="invest-data-history">
+                                                <div class="title">Fecha Movimiento</div>
+                                                <div class="amount" id="fechaMovimiento"></div>
+                                            </div>
+                                            <div class="invest-data-history">
+                                                <div class="title">Monto por Asignar</div>
+                                                <div class="amount" id="montoRestante"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .card -->
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner">
+                                    <div class="card-title-group align-start mb-0">
+                                        <div class="card-title">
+                                            <h6 class="subtitle" id="rut" style="color:#1ee0ac !important"></h6>
+                                        </div>
+                                        <div class="card-tools">
+                                            <em class="card-hint icon ni ni-trash-fill" onclick="limpiarDatos()"
+                                                style="color:#e85347" data-toggle="tooltip" data-placement="left"
+                                                title="" data-original-title="Eliminar Movimiento"></em>
+                                        </div>
+                                    </div>
+                                    <div class="card-amount">
+                                        <span class="amount" id="monto"></span>
+                                    </div>
+                                    <div class="invest-data">
+                                        <div class="invest-data-amount g-2">
+                                            <div class="invest-data-history">
+                                                <div class="title">Fecha de Emisión</div>
+                                                <div class="amount" id="fechaEmision"></div>
+                                            </div>
+                                            <div class="invest-data-history">
+                                                <div class="title">Fecha de Vencimiento</div>
+                                                <div class="amount" id="fechaVcto"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .card -->
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-6" style="text-align: right">
+                            <div class="form-group">
+                                <button type="button" id="btnConciliar" class="btn btn-sm btn-primary"
+                                        style="display: none" onclick="agregarConciliacion()"><em
+                                        class="icon ni ni-tranx"></em> Conciliar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner">
+                                    <h4 class="title" style="text-align: center">Compras - Ventas</h4>
+                                    <hr>
+                                    <div class="table-responsive">
+                                        <table class="table" id="mvCompraVenta">
+                                            <thead>
+                                            <tr>
+                                                <th>Folio</th>
+                                                <th>Cliente</th>
+                                                <th>Tipo</th>
+                                                <th>Fecha Emisión</th>
+                                                <th>Fecha Vcto</th>
+                                                <th>Monto</th>
+                                                <th>Monto Por Asignar</th>
+                                                <th style="text-align: center">Conciliar</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for foo in compra_cv %}
+                                                {% set fechaM = (foo[3] | string).split('-') %}
+                                                {% set fechaMovimiento = fechaM[2]~'-'~fechaM[1]~'-'~fechaM[0] %}
+                                                {% set fechaV = (foo[4] | string).split('-') %}
+                                                {% set fechaEstimada = fechaV[2]~'-'~fechaV[1]~'-'~fechaV[0] %}
+                                                {% set monto = foo[5] %}
+                                                <tr id="{{ loop.index0 }}">
+                                                    <td>{{ foo[0] }}</td>
+                                                    <td>{{ foo[2] }} {{ foo[7] }}</td>
+                                                    <td><span class="badge badge-info">Compra</span></td>
+                                                    <td>{{ fechaMovimiento }}</td>
+                                                    <td>{{ fechaEstimada }}</td>
+                                                    <td style="text-align: right">
+                                                        <span id="sugerenciaMostrarCompra_{{ loop.index0 }}" class="sugerenciaMostrar{{ monto|int }}"></span>
+                                                        {{ "{:,.0f}".format(monto).replace(',','.') }}</td>
+                                                    <td></td>
+                                                    <td style="text-align: center">
+                                                        {% if(foo[6]=='no conciliada') %}
+                                                        <button class="btn btn-sm btn-dim btn-info" onclick="movimientoCompraVenta('{{ foo[0] }}','{{ foo[2] }}','{{ foo[7] }}','{{ fechaMovimiento }}','{{ fechaEstimada }}','{{ monto|int }}')">Seleccionar</button>
+                                                        {% else %}<span class="badge badge-dot badge-success">Conciliado</span>
+                                                    {% endif %}</td>
+                                                    <input type="hidden" id="totalMovimientoCompraVentaSugerido" class="totalMovimientoCompraVentaSugerido" value="{{ monto|int }}">
+                                                </tr>
+                                            {% endfor %}
+                                            {% for foo in venta_cv %}
+                                                {% set fechaM = (foo[3] | string).split('-') %}
+                                                {% set fechaMovimiento = fechaM[2]~'-'~fechaM[1]~'-'~fechaM[0] %}
+                                                {% set fechaV = (foo[4] | string).split('-') %}
+                                                {% set fechaEstimada = fechaV[2]~'-'~fechaV[1]~'-'~fechaV[0] %}
+                                                {% set monto = foo[5] %}
+                                                <tr id="fila_{{ loop.index0 }}">
+                                                    <input type="hidden" id="totalMovimientoCompraVentaSugerido" class="totalMovimientoCompraVentaSugerido" value="{{ monto|int }}">
+                                                    <td>{{ foo[0] }}</td>
+                                                    <td>{{ foo[2] }} {{ foo[7] }}</td>
+                                                    <td><span class="badge badge-warning">Venta</span></td>
+                                                    <td>{{ fechaMovimiento }}</td>
+                                                    <td>{{ fechaEstimada }}</td>
+                                                    <td style="text-align: right">
+                                                        <span id="sugerenciaMostrarVenta_{{ loop.index0 }}" class="sugerenciaMostrar{{ monto|int }}"></span>
+                                                        {{ "{:,.0f}".format(monto).replace(',','.') }}</td>
+                                                    <td></td>
+                                                    <td style="text-align: center">
+                                                        {% if(foo[6]=='no conciliada') %}
+                                                        <button class="btn btn-sm btn-dim btn-info" onclick="movimientoCompraVenta('{{ foo[0] }}','{{ foo[2] }}','{{ foo[7] }}','{{ fechaMovimiento }}','{{ fechaEstimada }}','{{ monto|int }}')">Seleccionar</button>
+                                                    {% else %}<span class="badge badge-dot badge-success">Conciliado</span>
+                                                    {% endif %}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="modalConciliada">
+        <div class="modal-dialog modal-dialog-top modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Movimiento Bancario Conciliado </h4>
+                    <button onclick="limpiarDatos()" class="close" data-dismiss="modal" aria-label="Close">
+                        <em class="icon ni ni-cross"></em>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner">
+                                    <div class="card-title-group align-start mb-0">
+                                        <div class="card-title">
+                                            <h6 class="subtitle" id="descripcionMovimientoConciliado"
+                                                style="color:#f4bd0e"></h6>
+                                        </div>
+                                    </div>
+                                    <div class="card-amount">
+                                        <span class="amount" id="montoMovimientoConciliado"></span>
+                                    </div>
+                                    <div class="invest-data">
+                                        <div class="invest-data-amount g-2">
+                                            <div class="invest-data-history">
+                                                <div class="title">Fecha Movimiento</div>
+                                                <div class="amount" id="fechaMovimientoConciliado"></div>
+                                            </div>
+                                            <div class="invest-data-history">
+                                                <div class="title">Monto por Asignar</div>
+                                                <div class="amount" id="montoRestanteConciliado"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .card -->
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner">
+                                    <div class="card-title-group align-start mb-0">
+                                        <div class="card-title">
+                                            <h6 class="subtitle" id="rutConciliado" style="color:#1ee0ac !important"></h6>
+                                        </div>
+                                    </div>
+                                    <div class="card-amount">
+                                        <span class="amount" id="montoConciliado2"></span>
+                                    </div>
+                                    <div class="invest-data">
+                                        <div class="invest-data-amount g-2">
+                                            <div class="invest-data-history">
+                                                <div class="title">Fecha de Emisión</div>
+                                                <div class="amount" id="fechaEmisionConciliado"></div>
+                                            </div>
+                                            <div class="invest-data-history">
+                                                <div class="title">Fecha de Vencimiento</div>
+                                                <div class="amount" id="fechaVctoConciliado"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .card -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- content @e -->
+    <input type="hidden" id="descripcionConciliacion">
+    <input type="hidden" id="codigoMovimiento">
+    <input type="hidden" id="folio">
+    <input type="hidden" id="totalCompraVenta">
+    <input type="hidden" id="totalMovimientoBancario">
+    <input type="hidden" id="contadorFila">
+    <input type="hidden" name="urlCambiarEmpresa" id="urlCambiarEmpresa" value="banco">
+
+    <input type="hidden" name="rutApoderado" id="rutApoderado">
+    <input type="hidden" name="cuentaBancaria" id="cuentaBancaria">
+    <!-- content @e -->
+    <script>
+        var banco = 'bci';
+        filtrarporPeriodo();
+
+        function filtrarporPeriodo() {
+            var html = '';
+            if ($("#mesAnio").val() == 'sindatos') {
+                var totalConciliadas=0;
+                html += `<table class="datatable-init-export nowrap table" id="tablaBci">
+                                        <thead>
+                                            <tr>
+                                                <th>Descripción</th>
+                                                <th>Fecha</th>
+                                                <th>Cargo</th>
+                                                <th>Abono</th>
+                                                <th style="text-align: center">Conciliar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>{% for mb in movimiento_cb %}
+                {% set fechaE = (mb[10] | string).split('-') %}
+                {% set fechaEditada = fechaE[2]~'-'~fechaE[1]~'-'~fechaE[0] %}
+                <tr>
+                    <td>{{mb[1]}}</td>
+                    <td>{{fechaEditada}}</td>
+                    <td style="text-align: right">{{"{:,.0f}".format(mb[7]).replace(',','.')}}</td>
+                    <td style="text-align: right">{{"{:,.0f}".format(mb[8]).replace(',','.')}}</td>
+                    <td style="text-align: center">
+                    {% if(mb[12]=='no conciliada') %}
+                    <button class="btn btn-sm btn-primary" onclick="conciliar('{{ mb[0] }}','{{mb[1]}}','{{ fechaEditada }}','{{ (mb[7]|int) }}','{{ mb[8]|int }}','no conciliada')"><em class="icon ni ni-tranx"></em> Conciliar</button></td>
+                    {% else %}`;
+                        totalConciliadas= totalConciliadas + 1;
+                        html += `<input type="hidden" class="MontoConciliadas" value="{{ (mb[7]|int)+(mb[8]|int) }}">
+
+                       {% for v in conciliacionesBancariasCompras %}
+                            {% if(mb[0]==v[8]) %}
+                                {% set fechaMovEm = (v[5] | string).split('-') %}
+                                {% set fechaEmision = fechaMovEm[2]~'-'~fechaMovEm[1]~'-'~fechaMovEm[0] %}
+                                {% set fechaMovEs = (v[6] | string).split('-') %}
+                                {% set fechaEstimada = fechaMovEs[2]~'-'~fechaMovEs[1]~'-'~fechaMovEs[0] %}
+                                <a href="javascript:conciliar('{{ mb[0] }}','{{mb[1]}}','{{ fechaEditada }}','{{ (mb[7]|int) }}','{{ mb[8]|int }}','conciliada','{{ v[3] }}','{{ v[9] }}','{{ fechaEmision }}','{{ fechaEstimada }}','{{ v[7]|int }}')"><span class="badge badge-dot badge-success">Conciliada</span></a>
+                            {% endif %}
+                        {% endfor %}
+                        {% for v in conciliacionesBancariasVentas %}
+                            {% if(mb[0]==v[8]) %}
+                                {% set fechaMovEm = (v[5] | string).split('-') %}
+                                {% set fechaEmision = fechaMovEm[2]~'-'~fechaMovEm[1]~'-'~fechaMovEm[0] %}
+                                {% set fechaMovEs = (v[6] | string).split('-') %}
+                                {% set fechaEstimada = fechaMovEs[2]~'-'~fechaMovEs[1]~'-'~fechaMovEs[0] %}
+                                <a href="javascript:conciliar('{{ mb[0] }}','{{mb[1]}}','{{ fechaEditada }}','{{ (mb[7]|int) }}','{{ mb[8]|int }}','conciliada','{{ v[4] }}','{{ v[9] }}','{{ fechaEmision }}','{{ fechaEstimada }}','{{ v[7]|int }}')"><span class="badge badge-dot badge-success">Conciliada</span></a>
+                            {% endif %}
+                        {% endfor %}
+
+                    {% endif %}
+                    <input type="hidden" class="cargo" value="{{mb[7]}}">
+                    <input type="hidden" class="abono" value="{{mb[8]}}">
+                </tr>
+            {% endfor %} </tbody>
+                                    </table>`;
+                $(".tablaaa").html(html);
+                $("#cantidadConciliada").html(totalConciliadas);
+                var montoConciliadas=0;
+                 $(".MontoConciliadas").each(function (i) {
+                     montoConciliadas+= parseInt($(".MontoConciliadas")[i].value || 0)
+                })
+                $("#montoConciliado").html(separadorMiles(montoConciliadas)+' CLP');
+                 $("#nombreMesConciliadas").html(' Historico');
+
+                var totalcargo = 0;
+                $(".cargo").each(function (i) {
+                    $(".cargo")[0].value
+                    totalcargo += parseInt($(".cargo")[i].value || 0)
+                });
+                $("#montoCargo").html(separadorMiles(totalcargo)+ ' CLP');
+                $("#nombreMesCargo").html(' Historico');
+
+                var totalabono = 0;
+                $(".abono").each(function (i) {
+                    $(".abono")[0].value
+                    totalabono += parseInt($(".abono")[i].value || 0)
+                });
+                $("#montoAbono").html(separadorMiles(totalabono)+ ' CLP');
+                $("#nombreMesAbono").html(' Historico');
+            } else {
+                html = '';
+                var dmesAnio = $("#mesAnio").val().split('-');
+                $("#nombreMes").html(dmesAnio[0]);
+                $("#nombreMes2").html(dmesAnio[0]);
+                $("#nombreMes3").html(dmesAnio[0]);
+                var fecha2 = $("#mesAnio").val().split('-');
+                var fecha3 = nombreANumero(fecha2[0]) + '-' + fecha2[1];
+                var totalConciliadas = 0;
+                html += `<table class="datatable-init-export nowrap table" id="tablaBci">
+                                        <thead>
+                                            <tr>
+                                                <th>Descripción</th>
+                                                <th>Fecha</th>
+                                                <th>Cargo</th>
+                                                <th>Abono</th>
+                                                <th style="text-align: center">Conciliar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                    {% for mb in movimiento_cb %}
+                        {% set fechaE = (mb[10] | string).split('-') %}
+                        {% set fechaEditada = fechaE[2]~'-'~fechaE[1]~'-'~fechaE[0] %}`;
+                    var fecha4 = '{{ fechaE[1]~'-'~fechaE[0] }}';
+                    if (fecha3 == fecha4) {
+                        html += `<tr>
+                            <td>{{mb[1]}}</td>
+                            <td>{{fechaEditada}}</td>
+                            <td style="text-align: right">{{"{:,.0f}".format(mb[7]).replace(',','.')}}</td>
+                            <td style="text-align: right">{{"{:,.0f}".format(mb[8]).replace(',','.')}}</td>
+                            <td style="text-align: center">
+                            {% if(mb[12]=='no conciliada') %}
+                                <button class="btn btn-sm btn-primary" onclick="conciliar('{{ mb[0] }}','{{mb[1]}}','{{ fechaEditada }}','{{ (mb[7]|int) }}','{{ (mb[8]|int)}}')"><em class="icon ni ni-tranx"></em> Conciliar</button>
+                            {% else %}`;
+                                totalConciliadas= totalConciliadas + 1;
+                                html += `<input type="hidden" class="MontoConciliadas" value="{{ (mb[7]|int)+(mb[8]|int) }}">
+
+                                {% for v in conciliacionesBancariasCompras %}
+                                    {% if(mb[0]==v[8]) %}
+                                        {% set fechaMovEm = (v[5] | string).split('-') %}
+                                        {% set fechaEmision = fechaMovEm[2]~'-'~fechaMovEm[1]~'-'~fechaMovEm[0] %}
+                                        {% set fechaMovEs = (v[6] | string).split('-') %}
+                                        {% set fechaEstimada = fechaMovEs[2]~'-'~fechaMovEs[1]~'-'~fechaMovEs[0] %}
+                                        <a href="javascript:conciliar('{{ mb[0] }}','{{mb[1]}}','{{ fechaEditada }}','{{ (mb[7]|int) }}','{{ mb[8]|int }}','conciliada','{{ v[3] }}','{{ v[9] }}','{{ fechaEmision }}','{{ fechaEstimada }}','{{ v[7]|int }}')"><span class="badge badge-dot badge-success">Conciliada</span></a>
+                                    {% endif %}
+                                {% endfor %}
+                                {% for v in conciliacionesBancariasVentas %}
+                                    {% if(mb[0]==v[8]) %}
+                                        {% set fechaMovEm = ([5] | string).split('-') %}
+                                        {% set fechaEmision = fechaMovEm[2]~'-'~fechaMovEm[1]~'-'~fechaMovEm[0] %}
+                                        {% set fechaMovEs = ([6] | string).split('-') %}
+                                        {% set fechaEstimada = fechaMovEs[2]~'-'~fechaMovEs[1]~'-'~fechaMovEs[0] %}
+                                        <a href="javascript:conciliar('{{ mb[0] }}','{{mb[1]}}','{{ fechaEditada }}','{{ (mb[7]|int) }}','{{ mb[8]|int }}','conciliada','{{ v[4] }}','{{ v[9] }}','{{ fechaEmision }}','{{ fechaEstimada }}','{{ v[7]|int }}')"><span class="badge badge-dot badge-success">Conciliada</span></a>
+                                    {% endif %}
+                                {% endfor %}
+
+                            {% endif %}
+                            </td>
+                            <input type="hidden" class="cargo2" value="{{mb[7]}}">
+                            <input type="hidden" class="abono2" value="{{mb[8]}}">
+                        </tr>`;
+                    }
+                    `{% endfor %} </tbody>
+                                    </table>`;
+                $(".tablaaa").html(html);
+                $("#cantidadConciliada").html(totalConciliadas);
+                var montoConciliadas=0;
+                 $(".MontoConciliadas").each(function (i) {
+                     montoConciliadas+= parseInt($(".MontoConciliadas")[i].value || 0)
+                })
+                $("#montoConciliado").html(separadorMiles(montoConciliadas)+' CLP');
+                 $("#nombreMesConciliadas").html(dmesAnio[0]);
+
+                var totalcargoFiltro = 0;
+                $(".cargo2").each(function (i) {
+                    totalcargoFiltro += parseInt($(".cargo2")[i].value || 0)
+                });
+                $("#montoCargo").html(separadorMiles(totalcargoFiltro)+ ' CLP');
+                $("#nombreMesCargo").html(dmesAnio[0]);
+
+                var totalabonoFiltro = 0;
+                $(".abono2").each(function (i) {
+                    totalabonoFiltro += parseInt($(".abono2")[i].value || 0)
+                });
+                $("#montoAbono").html(separadorMiles(totalabonoFiltro)+ ' CLP');
+                $("#nombreMesAbono").html(dmesAnio[0]);
+            }
+        }
+    </script>
+    <script src="/static/assets/js/conciliarBanco.js"></script>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <script>
+                var mensaje = '{{ messages[0] }}';
+                console.log(mensaje);
+                switch (mensaje) {
+                    case 'actualizado':
+                        Swal.fire("Correcto", "Se actualizaron las facturas correctamente", "success");
+                        break;
+                }
+            </script>
+        {% endif %}
+    {% endwith %}
+{% endblock %}

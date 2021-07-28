@@ -1,0 +1,249 @@
+{% extends 'layout/templateBasico.html' %}
+{% block content %}
+<!-- Cuerpo -->
+<div class="nk-content ">
+    <div class="container-fluid">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                    <div class="nk-block-between">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">LISTADO TIPO DE CUENTAS</h3>
+                            <div class="nk-block-des text-soft">
+                                <p></p>
+                            </div>
+                        </div><!-- .nk-block-head-content -->
+                        <div class="nk-block-head-content">
+                            <div class="toggle-wrap nk-block-tools-toggle">
+                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
+                                <div class="toggle-expand-content" data-content="pageMenu">
+                                    <ul class="nk-block-tools g-3">
+                                        <li><a href="javascript:agregarTipocuentas()" class="btn btn-outline-success"><em class="ni ni-property-add"></em><span>Agregar Nuevo</span></a></li>
+                                        <!--<li class="nk-block-tools-opt">
+                                            <div class="drodown">
+                                                <a href="#" class="dropdown-toggle btn btn-icon btn-primary" data-toggle="dropdown"><em class="icon ni ni-plus"></em></a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <ul class="link-list-opt no-bdr">
+                                                       &lt;!&ndash; <li><a href="templates/ingresos/notaVenta.html"><span>Agregar Nota</span></a></li>&ndash;&gt;
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </li>-->
+                                    </ul>
+                                </div>
+                            </div><!-- .toggle-wrap -->
+                        </div><!-- .nk-block-head-content -->
+                    </div><!-- .nk-block-between -->
+                </div><!-- .nk-block-head -->
+                <div class="nk-block">
+                    <div class="card card-bordered card-stretch">
+                        <div class="card-inner-group">
+                            <div class="card card-preview">
+                                <div class="card-inner">
+                                    <table class="datatable-init nowrap table">
+                                        <thead>
+                                            <tr>
+                                                <th>Código Cuenta</th>
+                                                <th>Tipo Cuenta</th>
+                                                <th>Banco</th>
+                                                <th>Estado</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for d in tipo_cuenta%}
+                                            <tr>
+                                                <td>{{ d[0] }}</td>
+                                                <td>{{ d[1] }}</td>
+                                                <td>
+                                                {% if(d[5]==None) %}
+                                                    <span class="badge badge-dot badge-dot-xs badge-danger">No tiene banco asociado</span>
+                                                {% else %}
+                                                    {% for b in bancos %}
+                                                        {% if(b[0]==d[5]) %}
+                                                            {{ b[1] }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                                </td>
+                                                <td>{% if(d[6]=='activo') %}<span class="badge badge-success">Activa</span>{% else %}<span class="badge badge-danger">Inactiva</span>{% endif %}</td>
+                                                <td style="text-align: center"><button type="button" class="btn btn-sm btn-success" onclick="javascript:actualizarTipocuentas('{{d[0]}}','{{d[1]}}','{{ d[5] }}');"><em class="icon ni ni-edit-fill"></em> Actualizar</button></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- .card-inner-group -->
+                    </div><!-- .card -->
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="modalNueva">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titulo"></h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Banco</label>
+                    <div class="form-control-wrap">
+                        <select class="form-control" name="cod_banco" id="cod_banco" required>
+                            {% for b in bancos %}
+                                <option value="{{ b[0] }}">{{ b[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nombre Tipo Cuenta</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="desc_tipo_cuenta" name="desc_tipo_cuenta" required />
+                    </div>
+                </div>
+                {#<div class="form-group">
+                    <label class="form-label">Estado de la Cuenta</label>
+                    <div class="form-control-wrap">
+                        <select class="form-control">
+                            <option value="activo">Activo</option>
+                            <option value="no activo">Inactivo</option>
+                        </select>
+                    </div>
+                </div>#}
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="form-group">
+                        <button type="button" id="btn_guardar" onclick="agregarCuenta()" class="btn btn-lg btn-primary">Guardar</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="modalActualizar">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <label class="form-label">Actualizar Tipo Cuenta</label>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Banco</label>
+                    <div class="form-control-wrap">
+                        <select class="form-control" name="cod_banco_editar" id="cod_banco_editar" required></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nombre Tipo Cuenta</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="tipo_documento_editar" name="tipo_documento_editar" required />
+                        <input type="hidden" class="form-control" id="cod_tipo_editar" name="cod_tipo_editar" required />
+                    </div>
+                </div>
+                {#<div class="form-group">
+                    <label class="form-label">Estado de la Cuenta</label>
+                    <div class="form-control-wrap">
+                        <select class="form-control">
+                            <option value="activo">Activo</option>
+                            <option value="no activo">Inactivo</option>
+                        </select>
+                    </div>
+                </div>#}
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="form-group">
+                        <button type="button" id="btn_actualizar" class="btn btn-success" onclick="actualizarTipoCuenta()">Actualizar</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function agregarTipocuentas(){
+        $('#modalNueva').modal('show');
+        $("#titulo").html("Agregar Tipo Cuenta")
+    }
+
+    function actualizarTipocuentas(cod_tipo_doc,nombre,cod_banco_editar){
+        $('#modalActualizar').modal('show');
+        $("#cod_tipo_editar").val(cod_tipo_doc)
+        $("#tipo_documento_editar").val(nombre)
+        var select1 = '';
+        select1 += `{% for b in bancos %}`;
+            var ban = '{{ b[0] }}';
+            if(ban==cod_banco_editar) {
+                select1 += `<option value="{{ b[0] }}" selected>{{ cod_banco_editar }} {{ b[1] }}</option>`;
+            }else{
+                select1 += `<option value="{{ b[0] }}">{{ cod_banco_editar }} {{ b[1] }}</option>`;
+            }
+        select1 += `{% endfor %}`;
+        $("#cod_banco_editar").html(select1)
+    }
+
+    function agregarCuenta(){
+        if($("#desc_tipo_cuenta").val()==''){
+            Swal.fire("Alerta", "Debe ingresar tipo cuenta bancaria", "warning");
+        }else if($("#cod_banco").val()==''){
+            Swal.fire("Alerta", "Debe ingresar un banco", "warning");
+        }else {
+            var data = {
+                "desc_tipo_cuenta": $("#desc_tipo_cuenta").val(),
+                "cod_banco": $("#cod_banco").val()
+            }
+            $.ajax({
+                type: "post",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                url: '/cuenta/tipoCuentas',
+                success: function (respuesta) {
+                    Swal.fire("Correcto", "El tipo cuenta se guardo correctamente", "success");
+                    $("#btn_guardar").hide();
+                    setTimeout('document.location.reload()', 3000);
+                },
+                error: function () {
+                    alert('Disculpe, existió un problema');
+                }
+            })
+        }
+    }
+
+    function actualizarTipoCuenta(){
+        if($("#tipo_documento_editar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar tipo cuenta bancaria", "warning");
+        }else if($("#cod_banco_editar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar un banco", "warning");
+        }else {
+            var data = {
+                "desc_tipo_cuenta": $("#tipo_documento_editar").val(),
+                "cod_tipo_cuenta": $("#cod_tipo_editar").val(),
+                "cod_banco": $("#cod_banco_editar").val()
+            }
+            $.ajax({
+                type: "update",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                url: '/cuenta/tipoCuentas',
+                success: function (respuesta) {
+                    Swal.fire("Correcto", "El tipo cuenta se actualizo correctamente", "success");
+                    $("#btn_actualizar").hide();
+                    setTimeout('document.location.reload()', 3000);
+                },
+                error: function () {
+                    alert('Disculpe, existió un problema');
+                }
+            })
+        }
+    }
+</script>
+<!-- content @e -->
+{% endblock %}

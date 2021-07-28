@@ -1,0 +1,77 @@
+{% extends 'layout/templateBasico.html' %}
+{% block content %}
+<!-- Cuerpo -->
+<div class="nk-content ">
+    <div class="container-fluid">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                    <div class="nk-block-between">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">LISTADO DE PENDIENTES</h3>
+                            <div class="nk-block-des text-soft">
+                                <p>{#total de datos 1200#}</p>
+                            </div>
+                        </div><!-- .nk-block-head-content -->
+                        <div class="nk-block-head-content">
+                            <div class="toggle-wrap nk-block-tools-toggle">
+                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
+                                <div class="toggle-expand-content" data-content="pageMenu">
+                                    <ul class="nk-block-tools g-3">
+                                    </ul>
+                                </div>
+                            </div><!-- .toggle-wrap -->
+                        </div><!-- .nk-block-head-content -->
+                    </div><!-- .nk-block-between -->
+                </div><!-- .nk-block-head -->
+                <div class="nk-block">
+                    <div class="card card-bordered card-stretch">
+                        <div class="card-inner-group">
+                            <div class="card card-preview">
+                                <div class="card-inner">
+                                    {{ cuentasPendientes }}
+                                    <table class="datatable-init nowrap table">
+                                        <thead>
+                                            <tr>
+                                                <th>Banco</th>
+                                                <th>Numero Cuenta</th>
+                                                <th>Tipo Cuenta</th>
+                                                <th>Estado Cuenta</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            {#{% for c in dtsctas %}
+                                                <tr>
+                                                    <td>{{ c['banco'] }}</td>
+                                                    <td>{{ c['numero cuenta'] }}</td>
+                                                    <td>{{ c['tipo cuenta'] }}</td>
+                                                    <td><span class="badge badge-success ml-0">Verificada</span></td>
+                                                    {% for cu in cuenta_bancaria %}
+                                                        {% if(c['numero cuenta']==cu[1]) %}
+                                                            <td style="text-align: center"><button type="button" class="btn btn-sm btn-success" onclick="javascript:abrirActualizar('{{ cu[1] }}','{{ cu[7] }}','{{ cu[8] }}','{{ cu[6] }}','{{ cu[9] }}','{{ cu[5] }}');"><em class="icon ni ni-edit-fill"></em> Actualizar</button></td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tr>
+                                            {% endfor %}#}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- .card-inner-group -->
+                    </div><!-- .card -->
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- content @e -->
+{% endblock %}

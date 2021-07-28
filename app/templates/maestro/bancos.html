@@ -1,0 +1,194 @@
+{% extends 'layout/templateBasico.html' %}
+{% block content %}
+<!-- Cuerpo -->
+<div class="nk-content ">
+    <div class="container-fluid">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                    <div class="nk-block-between">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">LISTADO DE BANCOS</h3>
+                            <div class="nk-block-des text-soft">
+                                <p></p>
+                            </div>
+                        </div><!-- .nk-block-head-content -->
+                        <div class="nk-block-head-content">
+                            <div class="toggle-wrap nk-block-tools-toggle">
+                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
+                                <div class="toggle-expand-content" data-content="pageMenu">
+                                    <ul class="nk-block-tools g-3">
+                                        <li><a href="javascript:agregarBancos()" class="btn btn-outline-success"><em class="ni ni-property-add"></em><span>Agregar Nuevo</span></a></li>
+                                        <!--<li class="nk-block-tools-opt">
+                                            <div class="drodown">
+                                                <a href="#" class="dropdown-toggle btn btn-icon btn-primary" data-toggle="dropdown"><em class="icon ni ni-plus"></em></a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <ul class="link-list-opt no-bdr">
+                                                       &lt;!&ndash; <li><a href="templates/ingresos/notaVenta.html"><span>Agregar Nota</span></a></li>&ndash;&gt;
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </li>-->
+                                    </ul>
+                                </div>
+                            </div><!-- .toggle-wrap -->
+                        </div><!-- .nk-block-head-content -->
+                    </div><!-- .nk-block-between -->
+                </div><!-- .nk-block-head -->
+                <div class="nk-block">
+                    <div class="card card-bordered card-stretch">
+                        <div class="card-inner-group">
+                            <div class="card card-preview">
+                                <div class="card-inner">
+                                    <table class="datatable-init nowrap table" id="tablaBancos">
+                                        <thead>
+                                            <tr>
+                                                <th>Banco</th>
+                                                <th>Código SBIF</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for b in bancos%}
+                                            <tr>
+                                                <td>{{ b[1] }}</td>
+                                                <td>{{ b[5] }}</td>
+                                                <td style="text-align: center"><button type="button" class="btn btn-sm btn-success" onclick="javascript:actualizarBancos('{{b[0]}}','{{b[1]}}','{{b[5]}}');"><em class="icon ni ni-edit-fill"></em> Actualizar</button></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- .card-inner-group -->
+                    </div><!-- .card -->
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade zoom" tabindex="-1" id="modalNueva">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Banco</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Nombre Banco</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="nombre_banco" name="nombre_banco" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Código SBIF</label>
+                    <div class="form-control-wrap">
+                        <input type="number" class="form-control" id="cod_sbif" name="cod_sbif" required />
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="form-group">
+                        <button type="button" id="btn_guardar" onclick="agregarBanco()" class="btn btn-lg btn-primary">Guardar</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade zoom" tabindex="-1" id="modalActualizar">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Actualizar Banco</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Nombre Banco</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="nombre_banco_editar" name="nombre_banco_editar" required />
+                        <input type="hidden" id="cod_banco_editar" name="cod_banco_editar" required />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="form-group">
+                        <button type="button" id="btn_actualizar" class="btn btn-success" onclick="actualizarBanco()">Actualizar</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function agregarBancos(){
+        $('#modalNueva').modal('show');
+    }
+
+    function actualizarBancos(cod_banco,nombre){
+        $('#modalActualizar').modal('show');
+        $("#cod_banco_editar").val(cod_banco)
+        $("#nombre_banco_editar").val(nombre)
+    }
+
+    function agregarBanco(){
+        if($("#nombre_banco").val()==''){
+            Swal.fire("Alerta", "Debe ingresar un nombre de banco", "warning");
+        }else if($("#cod_sbif").val()==''){
+            Swal.fire("Alerta", "Debe ingresar el código sbif", "warning");
+        }else {
+            var data = {
+                "nombre_banco": $("#nombre_banco").val(),
+                "cod_sbif": $("#cod_sbif").val()
+            }
+            $.ajax({
+                type: "post",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                url: '/bancos/banco',
+                success: function (respuesta) {
+                    Swal.fire("Correcto", "El banco se guardo correctamente", "success");
+                    $("#btn_guardar").hide();
+                    setTimeout('document.location.reload()', 3000);
+                },
+                error: function () {
+                    alert('Disculpe, existió un problema');
+                }
+            })
+        }
+    }
+
+    function actualizarBanco(){
+        if($("#nombre_banco_editar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar un nombre de banco", "warning");
+        }else {
+            var data = {
+                "nombre_banco": $("#nombre_banco_editar").val(),
+                "cod_banco": $("#cod_banco_editar").val()
+            }
+            $.ajax({
+                type: "update",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                url: '/bancos/banco',
+                success: function (respuesta) {
+                    Swal.fire("Correcto", "El banco se actualizo correctamente", "success");
+                    $("#btn_actualizar").hide();
+                    setTimeout('document.location.reload()', 3000);
+                },
+                error: function () {
+                    alert('Disculpe, existió un problema');
+                }
+            })
+        }
+    }
+</script>
+<!-- content @e -->
+{% endblock %}

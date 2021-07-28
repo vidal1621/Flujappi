@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zxx" class="js">
+
+<head>
+    <base href="../">
+    <meta charset="utf-8">
+    <meta name="author" content="Natalia">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Ejecucion de programa">
+    <!-- Fav Icon  -->
+    <link rel="shortcut icon" href="/static/assets/images/logo/flujappi.ico">
+    <!-- Page Title  -->
+    <title>{{titulo}}</title>
+    <!-- StyleSheets  -->
+    <link rel="stylesheet" href="/static/assets/css/dashlite.css?ver=2.4.0">
+    <link id="skin-default" rel="stylesheet" href="/static/assets/css/theme.css?ver=2.4.0">
+</head>
+
+<body class="nk-body bg-lighter npc-general has-sidebar no-touch nk-nio-theme dark-mode"> <!--nk-body bg-lighter npc-general has-sidebar -->
+    <div class="nk-app-root">
+        <!-- main @s -->
+        <div class="nk-main ">
+            <!-- wrap @s -->
+             <!-- MENU -->
+
+            <!-- Menu -->
+            <div class="nk-wrap ">
+                <!-- Menu encabezado -->
+
+                <!-- Menu encabezado -->
+                <!-- Cuerpo -->
+                <div class="nk-content ">
+                    <div class="container-fluid">
+                        <div class="nk-content-inner">
+                            <div class="nk-content-body">
+                                <div class="nk-block-head nk-block-head-sm">
+                                    <div class="nk-block-between">
+                                        <div class="nk-block-head-content">
+                                            <h3 class="nk-block-title page-title">Pagos</h3>
+                                            <div class="nk-block-des text-soft">
+                                                <p>Genera el pago de tu servicio</p>
+                                            </div>
+                                        </div><!-- .nk-block-head-content -->
+                                    </div><!-- .nk-block-between -->
+                                </div><!-- .nk-block-head -->
+                                <div class="nk-block">
+                                    <div class="card card-bordered card-stretch">
+                                        <div class="card-inner-group">
+                                            <div class="card card-preview">
+                                                <div class="card-inner">
+                                                    <div class="row">
+                                                        <div class="col-xl-5 col-lg-5 col-12"></div>
+                                                        <div class="col-xl-2 col-lg-2 col-12">
+                                                            <form method="post" action="/webpay/create">
+                                                                <input type="hidden" name="buy_order" value="1">
+                                                                <input type="hidden" name="session_id" value="{{ cod_usuario[0] }}">
+                                                                <input type="hidden" name="amount" value="1">
+                                                                <div class="form-group">
+                                                                    <button type="submit" class="btn btn-lg btn-primary btn-block">
+                                                                        <em class="icon ni ni-sign-cc-alt"></em
+                                                                        ><em class="icon ni ni-visa-alt"></em>
+                                                                        <em class="icon ni ni-master-card"></em> Pagar
+                                                                    </button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="col-xl-5 col-lg-5 col-12"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!-- .card-inner-group -->
+                                    </div><!-- .card -->
+                                </div><!-- .nk-block -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Cuerpo -->
+                <!-- Pie de Pagina -->
+                {% include "layout/footer.html" %}
+                <!-- Pie de Pagina -->
+            </div>
+            <!-- wrap @e -->
+        </div>
+        <!-- main @e -->
+    </div>
+    <!-- app-root @e -->
+    <!-- JavaScript -->
+<script src="/static/assets/js/bundle.js?ver=2.4.0"></script>
+<script src="/static/assets/js/scripts.js?ver=2.4.0"></script>
+<script>
+    function generarPago(){
+        var data = {
+            "buy_order": 1,
+            "session_id": {{ cod_usuario[0] }},
+            "amount": 1
+        }
+        $.ajax({
+            type: "post",
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            url: '/webpay/create',
+            success: function (respuesta) {
+                setTimeout('document.location.reload()', 3000);
+            },
+            error: function () {
+                alert('Disculpe, existió un problema');
+            }
+        })
+    }
+</script>
+</body>
+</html>

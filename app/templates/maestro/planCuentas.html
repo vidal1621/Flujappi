@@ -1,0 +1,196 @@
+{% extends 'layout/templateBasico.html' %}
+{% block content %}
+<!-- Cuerpo -->
+<div class="nk-content ">
+    <div class="container-fluid">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                    <div class="nk-block-between">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">PLAN DE CUENTAS</h3>
+                            <div class="nk-block-des text-soft">
+                                <!--<p>total de datos 1200.</p>-->
+                            </div>
+                        </div><!-- .nk-block-head-content -->
+                        <div class="nk-block-head-content">
+                            <div class="toggle-wrap nk-block-tools-toggle">
+                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
+                                <div class="toggle-expand-content">
+                                    <ul class="nk-block-tools g-3">
+                                        <li><a href="javascript:verModal('modalNueva','Agregar Cuenta')" class="btn btn-outline-success"><em class="ni ni-property-add"></em><span>Agregar Nuevo</span></a></li>
+                                    </ul>
+                                </div>
+                            </div><!-- .toggle-wrap -->
+                        </div><!-- .nk-block-head-content -->
+                    </div><!-- .nk-block-between -->
+                </div><!-- .nk-block-head -->
+                <div class="nk-block">
+                    <div class="card card-bordered card-stretch">
+                        <div class="card-inner-group">
+                            <div class="card card-preview">
+                                <div class="card-inner">
+                                    <table class="datatable-init nowrap table">
+                                        <thead>
+                                            <tr>
+                                                <th>Descripción</th>
+                                                <th>Orden</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for d in cgastos %}
+                                            <tr>
+                                                <td>{{ d[1] }}</td>
+                                                <td>{{ d[4] }}</td>
+                                                <td style="text-align: center"><button type="button" class="btn btn-sm btn-success" onclick="javascript:actualizarFila('{{d[0]}}','{{d[1]}}','{{d[4]}}');"><em class="icon ni ni-edit-fill"></em> Actualizar</button></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- .card-inner-group -->
+                    </div><!-- .card -->
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- content @e -->
+
+<div class="modal fade" tabindex="-1" id="modalNueva">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titulo"></h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Descripción de la cuenta</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="desc_cuenta_gastos" name="desc_cuenta_gastos" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Orden</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="orden" name="orden" required />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="form-group">
+                        <button type="button" id="btn_guardar" onclick="agregarCuenta()" class="btn btn-lg btn-primary">Guardar</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="modalActualizar">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <label class="form-label">Actualizar Plan Cuenta</label>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Descripción de la cuenta</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="desc_cuenta_gastos_editar" name="desc_cuenta_gastos_editar" required />
+                        <input type="hidden" class="form-control" id="cod_cuenta_gasto_editar" name="cod_cuenta_gasto_editar" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Orden</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="orden_editar" name="orden_editar" required />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="form-group">
+                        <button type="button" id="btn_actualizar" class="btn btn-success" onclick="actualizarCuenta()">Actualizar</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function verModal(elemento,titulo,accion) {
+        $('#' + elemento + '').appendTo('body').modal('show');
+        $("#titulo").html(titulo);
+    }
+
+    function actualizarFila(cod_tipo_doc,nombre,orden){
+        $('#modalActualizar').modal('show');
+        $("#cod_cuenta_gasto_editar").val(cod_tipo_doc)
+        $("#desc_cuenta_gastos_editar").val(nombre)
+        $("#orden_editar").val(orden)
+    }
+
+    function agregarCuenta(){
+        if($("#desc_cuenta_gastos").val()==''){
+            Swal.fire("Alerta", "Debe una descripción", "warning");
+        }else if($("#orden").val()==''){
+            Swal.fire("Alerta", "Debe ingresar un orden", "warning");
+        }else {
+            var data = {
+                "desc_cuenta_gastos": $("#desc_cuenta_gastos").val(),
+                "orden": $("#orden").val()
+            }
+            $.ajax({
+                type: "post",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                url: '/cuenta/planCuentas',
+                success: function (respuesta) {
+                    Swal.fire("Correcto", "La cuenta se guardo correctamente", "success");
+                    $("#btn_guardar").hide();
+                    setTimeout('document.location.reload()', 3000);
+                },
+                error: function () {
+                    alert('Disculpe, existió un problema');
+                }
+            })
+        }
+    }
+
+    function actualizarCuenta(){
+        if($("#desc_cuenta_gastos_editar").val()==''){
+            Swal.fire("Alerta", "Debe una descripción", "warning");
+        }else if($("#orden_editar").val()==''){
+            Swal.fire("Alerta", "Debe ingresar un orden", "warning");
+        }else {
+            var data = {
+                "cod_cuenta_gastos": $("#cod_cuenta_gasto_editar").val(),
+                "desc_cuenta_gastos": $("#desc_cuenta_gastos_editar").val(),
+                "orden": $("#orden_editar").val()
+            }
+            console.log(data)
+            $.ajax({
+                type: "update",
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                url: '/cuenta/planCuentas',
+                success: function (respuesta) {
+                    Swal.fire("Correcto", "Se actualizo la cuenta correctamente", "success");
+                    $("#btn_actualizar").hide();
+                    setTimeout('document.location.reload()', 3000);
+                },
+                error: function () {
+                    alert('Disculpe, existió un problema');
+                }
+            })
+        }
+    }
+</script>
+{% endblock %}
